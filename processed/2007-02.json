@@ -1,0 +1,129 @@
+{
+  "list": "r-sig-mediawiki",
+  "description": "",
+  "month": "2007-02",
+  "messages": [
+    {
+      "id": "msg-b8044ee5e1c9",
+      "message_id": "<45C358EB.1050102@cs.uni-potsdam.de>",
+      "from_name": "Marco Stöcker",
+      "from_email_hash": "b6cfcf19d2c8b447089b3afa0222b5da89760003a12b6f47f612b1cfc8659cd8",
+      "date": "2007-02-02T15:29:47Z",
+      "subject": "[R-sig-mediawiki] Installation Trouble - getCmd() issue?",
+      "subject_clean": "Installation Trouble - getCmd() issue?",
+      "in_reply_to": null,
+      "references": [],
+      "body_plain": "Hello,\n\nI actually work on a project to combine R with mediawiki  to generate \nstatistical analysis directly from the wiki database. I just installed \nthe wiki and the R extensions under windows XP but I received the error \nmessage as I read in the archive messages from December 2006. I guess \nthat the extensions are supported by an apache server under windows, \naren't they? Does anybody know which changes I have to made?\n\nMarco",
+      "body_snippet": "Hello,\n\nI actually work on a project to combine R with mediawiki  to generate \nstatistical analysis directly from the wiki database. I just installed \nthe wiki and the R extensions under windows XP bu",
+      "thread_id": "thread-b8044ee5e1c9",
+      "thread_depth": 0,
+      "month": "2007-02"
+    },
+    {
+      "id": "msg-b4c48e4b4ed1",
+      "message_id": "<45C9E317.3050009@wiwi.hu-berlin.de>",
+      "from_name": "Sigbert Klinke",
+      "from_email_hash": "6badc41e98998822259f955b11d6355065569f94dfbc13448e2243996f1c8a59",
+      "date": "2007-02-07T14:32:55Z",
+      "subject": "[R-sig-mediawiki] Installation Trouble - getCmd() issue?",
+      "subject_clean": "Installation Trouble - getCmd() issue?",
+      "in_reply_to": "<45C7B23F.90409@cs.uni-potsdam.de>",
+      "references": [
+        "<45C358EB.1050102@cs.uni-potsdam.de>",
+        "<45C6ED40.9000005@wiwi.hu-berlin.de>",
+        "<45C7B23F.90409@cs.uni-potsdam.de>"
+      ],
+      "body_plain": "Hi,\n> Hello Mr Klinke\n>\n> Thanks for your fast answer. I'm using XAMPPlite version 1.5.3a (a \n> seen below) and MediaWiki version 1.8.2 in a windows xp professional \n> environment.\n>\n>  ApacheFriends XAMPP Lite version 1.5.3a\n>\n>  + Apache 2.2.2\n>  + MySQL 5.0.21\n>  + PHP 5.1.4 + PEAR (basic package)\n>  + eAccelerator 0.9.5 beta2 (PHP5 experimentally)\n>  + XAMPP Control Version 2.3 from www.nat32.com    + XAMPP Security \n> 1.0    + SQLite 2.8.15\n>  + OpenSSL 0.9.8b\n>  + phpMyAdmin 2.8.1\n>  + Webalizer 2.01-10\n>  + Zend Optimizer 3.0.0\n>\n> I hope this will help. Many thanks.\nWhen I install XAMPP Lite version 1.5.3a + Mediawiki 1.5.3. and the R \nextension v0.04 I get a page with the entry\n\nERROR: <convert...> command not found in\n\nIf it is that what you get then obviously the R extension did not find \nthe convert command from the ImageMagick package. If you have installed \nImageMagick somewhere in your system then simply change in the routine \ngetCmd in extbase.php the line\n\n$path = array('C:\\path-to-the-convert-cmd\\');\n\nFor the other necessary commands you have to add the other pathes in \nextbase.php too.\nIt might be a severe problem that the extension is written for Unix (I \ngave up to get it working under Windows).\n\nBest regards\n\nSigbert Klinke",
+      "body_snippet": "Hi,\n> Hello Mr Klinke\n>\n> Thanks for your fast answer. I'm using XAMPPlite version 1.5.3a (a \n> seen below) and MediaWiki version 1.8.2 in a windows xp professional \n> environment.\n>\n>  ApacheFriends ",
+      "thread_id": "thread-b4c48e4b4ed1",
+      "thread_depth": 0,
+      "month": "2007-02"
+    },
+    {
+      "id": "msg-e6ed74e188a8",
+      "message_id": "<C203337F.2FA9%mattias.rantalainen@imperial.ac.uk>",
+      "from_name": "Mattias Rantalainen",
+      "from_email_hash": "92d9bda1da0c966bd4f168e1f2eecf56d1be290b249ca94db0f9bc609cbc2c74",
+      "date": "2007-02-22T11:48:15Z",
+      "subject": "[R-sig-mediawiki] How to use form input?",
+      "subject_clean": "How to use form input?",
+      "in_reply_to": null,
+      "references": [],
+      "body_plain": "Hello,\n\nI've manage to install the R-mediawiki extension and I've got the setup to\nwork for text and image output on the wiki. However, I haven't been able to\nfigure out the syntax for using a form to enter parameters to R.\n\nFor instance as seen at:\nhttp://statwiki.wiwi.hu-berlin.de/index.php/Binomialverteilung\n\nI would appreciate if someone could post a short code example showing how\nthis could be done for a simple case. I realize that this question may be\ndue to my limited knowledge of PHP, but any help in the matter would be much\nappreciated.\n\nBest,\n/Mattias",
+      "body_snippet": "Hello,\n\nI've manage to install the R-mediawiki extension and I've got the setup to\nwork for text and image output on the wiki. However, I haven't been able to\nfigure out the syntax for using a form to",
+      "thread_id": "thread-e6ed74e188a8",
+      "thread_depth": 0,
+      "month": "2007-02"
+    },
+    {
+      "id": "msg-b1c481db1163",
+      "message_id": "<45E00AA6.9020508@wiwi.hu-berlin.de>",
+      "from_name": "Sigbert Klinke",
+      "from_email_hash": "6badc41e98998822259f955b11d6355065569f94dfbc13448e2243996f1c8a59",
+      "date": "2007-02-24T09:51:34Z",
+      "subject": "[R-sig-mediawiki] How to use form input?",
+      "subject_clean": "How to use form input?",
+      "in_reply_to": "<C203337F.2FA9%mattias.rantalainen@imperial.ac.uk>",
+      "references": [
+        "<C203337F.2FA9%mattias.rantalainen@imperial.ac.uk>"
+      ],
+      "body_plain": "Hi,\n> I would appreciate if someone could post a short code example showing how\n> this could be done for a simple case. I realize that this question may be\n> due to my limited knowledge of PHP, but any help in the matter would be much\n> appreciated.\n>   \nPlease have a look to \nhttp://mars.wiwi.hu-berlin.de/mediawiki/slides/index.php/Integration_of_R_into_wikis_-_Interaction \n.\n\nBest regards\n\n  Sigbert",
+      "body_snippet": "Hi,\n> I would appreciate if someone could post a short code example showing how\n> this could be done for a simple case. I realize that this question may be\n> due to my limited knowledge of PHP, but an",
+      "thread_id": "thread-e6ed74e188a8",
+      "thread_depth": 1,
+      "month": "2007-02"
+    },
+    {
+      "id": "msg-92db2679527d",
+      "message_id": "<C205FCF8.2FDD%mattias.rantalainen@imperial.ac.uk>",
+      "from_name": "Mattias Rantalainen",
+      "from_email_hash": "92d9bda1da0c966bd4f168e1f2eecf56d1be290b249ca94db0f9bc609cbc2c74",
+      "date": "2007-02-24T14:32:24Z",
+      "subject": "[R-sig-mediawiki] How to use form input?",
+      "subject_clean": "How to use form input?",
+      "in_reply_to": "<45E00AA6.9020508@wiwi.hu-berlin.de>",
+      "references": [],
+      "body_plain": "Many thanks!\n\nBest regards,\n/Mattias\n\n\nOn 24/2/07 09:51, \"Sigbert Klinke\" <sigbert at wiwi.hu-berlin.de> wrote:\n\n> Hi,\n>> I would appreciate if someone could post a short code example showing how\n>> this could be done for a simple case. I realize that this question may be\n>> due to my limited knowledge of PHP, but any help in the matter would be much\n>> appreciated.\n>>   \n> Please have a look to\n> http://mars.wiwi.hu-berlin.de/mediawiki/slides/index.php/Integration_of_R_into\n> _wikis_-_Interaction\n> .\n> \n> Best regards\n> \n>   Sigbert\n> \n> _______________________________________________\n> R-sig-mediawiki at r-project.org mailing list\n> https://stat.ethz.ch/mailman/listinfo/r-sig-mediawiki",
+      "body_snippet": "Many thanks!\n\nBest regards,\n/Mattias\n\n\nOn 24/2/07 09:51, \"Sigbert Klinke\" <sigbert at wiwi.hu-berlin.de> wrote:\n\n> Hi,\n>> I would appreciate if someone could post a short code example showing how\n>> t",
+      "thread_id": "thread-e6ed74e188a8",
+      "thread_depth": 2,
+      "month": "2007-02"
+    }
+  ],
+  "threads": [
+    {
+      "id": "thread-b8044ee5e1c9",
+      "subject": "Installation Trouble - getCmd() issue?",
+      "message_count": 1,
+      "participants": [
+        "Marco Stöcker"
+      ],
+      "started": "2007-02-02T15:29:47Z",
+      "last_reply": "2007-02-02T15:29:47Z",
+      "root_message_id": "msg-b8044ee5e1c9"
+    },
+    {
+      "id": "thread-b4c48e4b4ed1",
+      "subject": "Installation Trouble - getCmd() issue?",
+      "message_count": 1,
+      "participants": [
+        "Sigbert Klinke"
+      ],
+      "started": "2007-02-07T14:32:55Z",
+      "last_reply": "2007-02-07T14:32:55Z",
+      "root_message_id": "msg-b4c48e4b4ed1"
+    },
+    {
+      "id": "thread-e6ed74e188a8",
+      "subject": "How to use form input?",
+      "message_count": 3,
+      "participants": [
+        "Mattias Rantalainen",
+        "Sigbert Klinke"
+      ],
+      "started": "2007-02-22T11:48:15Z",
+      "last_reply": "2007-02-24T14:32:24Z",
+      "root_message_id": "msg-e6ed74e188a8"
+    }
+  ]
+}

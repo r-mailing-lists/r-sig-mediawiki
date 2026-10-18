@@ -1,0 +1,36 @@
+{
+  "list": "r-sig-mediawiki",
+  "description": "",
+  "month": "2007-03",
+  "messages": [
+    {
+      "id": "msg-7c3a820498be",
+      "message_id": "<45E99C92.2050208@wiwi.hu-berlin.de>",
+      "from_name": "Sigbert Klinke",
+      "from_email_hash": "6badc41e98998822259f955b11d6355065569f94dfbc13448e2243996f1c8a59",
+      "date": "2007-03-03T16:04:34Z",
+      "subject": "[R-sig-mediawiki] R extension 0.05",
+      "subject_clean": "R extension 0.05",
+      "in_reply_to": null,
+      "references": [],
+      "body_plain": "Hi,\n\nI just put version 0.05 at the web page \nhttp://mars.wiwi.hu-berlin.de/mediawiki/sk/index.php/R_Extension_for_MediaWiki. \nThe changes are:\n\n- Added patch by Michael Cassin for PHP5\n- More banned commands suggested by Michael Cassin\n- Upload and reading of Excel CSV and plain ASCII files\n\nHave fun\n\n  Sigbert Klinke",
+      "body_snippet": "Hi,\n\nI just put version 0.05 at the web page \nhttp://mars.wiwi.hu-berlin.de/mediawiki/sk/index.php/R_Extension_for_MediaWiki. \nThe changes are:\n\n- Added patch by Michael Cassin for PHP5\n- More banned ",
+      "thread_id": "thread-7c3a820498be",
+      "thread_depth": 0,
+      "month": "2007-03"
+    }
+  ],
+  "threads": [
+    {
+      "id": "thread-7c3a820498be",
+      "subject": "R extension 0.05",
+      "message_count": 1,
+      "participants": [
+        "Sigbert Klinke"
+      ],
+      "started": "2007-03-03T16:04:34Z",
+      "last_reply": "2007-03-03T16:04:34Z",
+      "root_message_id": "msg-7c3a820498be"
+    }
+  ]
+}

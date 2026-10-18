@@ -1,0 +1,105 @@
+[
+  {
+    "name": "Sigbert Klinke",
+    "slug": "sigbert-klinke",
+    "emailHash": "68f2cecfc19b8c6fa1235a8dd2aad2c85673d4a9e89dcf80f5f368d4332a6fa8",
+    "messageCount": 12,
+    "firstDate": "2006-08-28T06:52:30Z",
+    "lastDate": "2015-02-10T09:45:09Z",
+    "yearlyActivity": {
+      "2006": 7,
+      "2007": 3,
+      "2008": 1,
+      "2015": 1
+    }
+  },
+  {
+    "name": "Alex Brown",
+    "slug": "alex-brown",
+    "emailHash": "5a1b6703ca11a40a889227e4c2eea8bd908c0a02c7f0b2472a761e66dcc7ab23",
+    "messageCount": 5,
+    "firstDate": "2006-09-05T15:51:32Z",
+    "lastDate": "2006-09-27T13:33:24Z",
+    "yearlyActivity": {
+      "2006": 5
+    }
+  },
+  {
+    "name": "Mattias Rantalainen",
+    "slug": "mattias-rantalainen",
+    "emailHash": "92d9bda1da0c966bd4f168e1f2eecf56d1be290b249ca94db0f9bc609cbc2c74",
+    "messageCount": 2,
+    "firstDate": "2007-02-22T11:48:15Z",
+    "lastDate": "2007-02-24T14:32:24Z",
+    "yearlyActivity": {
+      "2007": 2
+    }
+  },
+  {
+    "name": "Aleks Montanha",
+    "slug": "aleks-montanha",
+    "emailHash": "a2e0c80731dde4598b21020e177bdec07f94a313a54165bb194acd996dca0b77",
+    "messageCount": 2,
+    "firstDate": "2007-01-05T19:14:30Z",
+    "lastDate": "2012-03-08T13:34:49Z",
+    "yearlyActivity": {
+      "2007": 1,
+      "2012": 1
+    }
+  },
+  {
+    "name": "Xiaoxu LI",
+    "slug": "xiaoxu-li",
+    "emailHash": "02400f771a25f3874cd60a4a09a30a9e05c807a3a92608e351cbc21fd4257e69",
+    "messageCount": 1,
+    "firstDate": "2008-11-27T08:20:12Z",
+    "lastDate": "2008-11-27T08:20:12Z",
+    "yearlyActivity": {
+      "2008": 1
+    }
+  },
+  {
+    "name": "Michael Cassin",
+    "slug": "michael-cassin",
+    "emailHash": "07f51706cf8d02d40cbc56949269de54505007e0dab877e50e6644fe7e73ec85",
+    "messageCount": 1,
+    "firstDate": "2006-12-04T17:17:28Z",
+    "lastDate": "2006-12-04T17:17:28Z",
+    "yearlyActivity": {
+      "2006": 1
+    }
+  },
+  {
+    "name": "Francesc",
+    "slug": "francesc",
+    "emailHash": "4edf65598763babcd00bf61fdd48d064c64842bb6d3b8f3727861730e7088949",
+    "messageCount": 1,
+    "firstDate": "2013-10-22T08:24:31Z",
+    "lastDate": "2013-10-22T08:24:31Z",
+    "yearlyActivity": {
+      "2013": 1
+    }
+  },
+  {
+    "name": "Marco Stöcker",
+    "slug": "marco-st-cker",
+    "emailHash": "b6cfcf19d2c8b447089b3afa0222b5da89760003a12b6f47f612b1cfc8659cd8",
+    "messageCount": 1,
+    "firstDate": "2007-02-02T15:29:47Z",
+    "lastDate": "2007-02-02T15:29:47Z",
+    "yearlyActivity": {
+      "2007": 1
+    }
+  },
+  {
+    "name": "Strelzoff, Andrew ERDC-RDE-ITL-MS",
+    "slug": "strelzoff-andrew-erdc-rde-itl-ms",
+    "emailHash": "c401d21da74c1ace6b023d2e4941a3407b1c5db2c2366cb528776f707d4674cc",
+    "messageCount": 1,
+    "firstDate": "2015-02-09T19:48:16Z",
+    "lastDate": "2015-02-09T19:48:16Z",
+    "yearlyActivity": {
+      "2015": 1
+    }
+  }
+]

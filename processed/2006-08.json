@@ -1,0 +1,36 @@
+{
+  "list": "r-sig-mediawiki",
+  "description": "",
+  "month": "2006-08",
+  "messages": [
+    {
+      "id": "msg-2439cbb23e1c",
+      "message_id": "<44F292AE.9030107@wiwi.hu-berlin.de>",
+      "from_name": "Sigbert Klinke",
+      "from_email_hash": "6badc41e98998822259f955b11d6355065569f94dfbc13448e2243996f1c8a59",
+      "date": "2006-08-28T06:52:30Z",
+      "subject": "[R-sig-mediawiki] R extension 0.03",
+      "subject_clean": "R extension 0.03",
+      "in_reply_to": null,
+      "references": [],
+      "body_plain": "Hi,\n\nsome days ago I put the R for Mediawiki extension 0.03 for download at \nhttp://mars.wiwi.hu-berlin.de/mediawiki/sk/index.php/R_Extension_for_MediaWiki.\n\nChanges are:\n- A new security level, thus we have currently three\n 0:  R programs run with the same permission as the web server\n 1 (default): A set of commands in R programs are forbidden (based on \nthe list of the R-PHP people)\n 2 (new): R programs run as a separate user which would allow that this \nuser can not read, e.g. LocalSettings.php which contains for example the \npassword for the MySQL Database\n- outHTML function interface has be simplified\n\nIf you are satisfied with 0.02 then there might be no need to change to \n0.03.\n\nI'am also looking for further small steps that can be done, like\n- choosing the output format for the graphics freely (currently pdf is \nproduced to have a vector scalable  outputformat and I generate jpg for \nthe web page)\n- improved error messaging\n- Sweave like output\nWhat would you be most interested or any other suggestions what to do next ?\n\nHave fun\n\n  Sigbert Klinke",
+      "body_snippet": "Hi,\n\nsome days ago I put the R for Mediawiki extension 0.03 for download at \nhttp://mars.wiwi.hu-berlin.de/mediawiki/sk/index.php/R_Extension_for_MediaWiki.\n\nChanges are:\n- A new security level, thus ",
+      "thread_id": "thread-2439cbb23e1c",
+      "thread_depth": 0,
+      "month": "2006-08"
+    }
+  ],
+  "threads": [
+    {
+      "id": "thread-2439cbb23e1c",
+      "subject": "R extension 0.03",
+      "message_count": 1,
+      "participants": [
+        "Sigbert Klinke"
+      ],
+      "started": "2006-08-28T06:52:30Z",
+      "last_reply": "2006-08-28T06:52:30Z",
+      "root_message_id": "msg-2439cbb23e1c"
+    }
+  ]
+}

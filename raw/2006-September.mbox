@@ -1,0 +1,1626 @@
+From alex at transitive.com  Tue Sep  5 17:51:32 2006
+From: alex at transitive.com (Alex Brown)
+Date: Tue, 5 Sep 2006 16:51:32 +0100
+Subject: [R-sig-mediawiki] Various changes to R extension - md5, uname, png
+Message-ID: <0A8FA137-1E7A-430B-95E6-F6D16C218130@transitive.com>
+
+Here are some changes I have made against version 0.02 of the  
+mediawiki extension to make it run on my server (suse), or to improve  
+functionality
+
+Patch 1:
+
+Change the checksum to use md5 instead of sha1, which did not exist  
+on my site
+Change the uname call to not have an argument, since it does not on  
+my site
+
+At some point we should probably detect what checksums are available  
+and use whatever is.
+
+Patch 2:
+
+Change the default image type to png instead of jpg.  Png is widely  
+supported by user agents, and compared to jpg it creates a much nicer  
+output image for line art such as that produced by R.
+
+This
+
+I will at some point upgrade to 0.03 and provide patches, but I  
+wanted to make these public now.
+
+If you would prefer these diffs in a different format, please let me  
+know.
+
+-Alex
+
+Patch 1:
+
+diff -u  extensions/Rext.php  Rext_backup_1_clean.php  | less
+--- extensions/Rext.php 2006-09-05 13:53:03.751510701 +0100
++++ Rext_backup_1_clean.php     2006-09-05 16:37:48.367253212 +0100
+@@ -37,7 +37,8 @@
+define('convert',     RgetDefault('convert'));
+function RgetDefault ($key) {
+-  $hostname = php_uname('n');
++  #$hostname = php_uname('n');
++  $hostname = php_uname();
+    # First general constants
+    switch ($key) {
+      case 'htdocs' :
+@@ -382,7 +383,7 @@
+    $onsave  = array_key_exists('onsave', $params);
+    $echo    = array_key_exists('echo', $params);
+    $direct  = !array_key_exists('iframe', $params);
+-  $sha1    = sha1($input . $output . $style);
++  $sha1    = md5($input . $output . $style);
+    $ws      = array_key_exists('workspace', $params)? $params 
+['workspace'] : '';
+    // security checks
+
+Patch 2:
+
+--- Rext_backup_2_clean.php     2006-09-05 16:42:33.211654510 +0100
++++ Rext_backup_1.php   2006-09-05 13:43:31.657285129 +0100
+@@ -207,12 +207,12 @@
+    $rws = r_dir. DIRECTORY_SEPARATOR . $ws;
+    switch ($output) {
+      case 'display':
+-      $png = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.png';
++      $jpg = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.jpg';
+        $pdf  = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.pdf';
+-      $url = r_url . DIRECTORY_SEPARATOR . $sha1 . '.png';
++      $url = r_url . DIRECTORY_SEPARATOR . $sha1 . '.jpg';
+        $urlpdf = r_url . DIRECTORY_SEPARATOR . $sha1 . '.pdf';
+        $htm = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.html';
+-      if (!file_exists($png) or onsave) {
++      if (!file_exists($jpg) or onsave) {
+          $content = '';
+          if ($ws!='') {
+             $content = $content . 'sys.load.image("' . $rws . '",  
+TRUE)' ."\n";
+@@ -229,14 +229,14 @@
+          fwrite ($fd, $content);
+          fclose ($fd);
+          $err = $err . runShell (r_cmd . ' < ' . $fn);
+-        $err = $err . runShell (convert . ' ' . $pdf . ' ' .  
+$convert . ' ' . $png);
++        $err = $err . runShell (convert . ' ' . $pdf . ' ' .  
+$convert . ' ' . $jpg);
+        }
+-      if (!file_exists($png)) {
+-        $png = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.png.0';
+-        if (file_exists($png)) {
++      if (!file_exists($jpg)) {
++        $jpg = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.jpg.0';
++        if (file_exists($jpg)) {
+            for ($i=0; ; $i++) {
+-            $old = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.png.' . $i;
+-            $new = r_dir . DIRECTORY_SEPARATOR . $sha1 . '-' . $i .  
+'.png';
++            $old = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.jpg.' . $i;
++            $new = r_dir . DIRECTORY_SEPARATOR . $sha1 . '-' . $i .  
+'.jpg';
+              if (file_exists($old)) {
+                rename ($old, $new);
+              } else {
+@@ -244,14 +244,14 @@
+              }
+            }
+          }
+-        $png = r_dir . DIRECTORY_SEPARATOR . $sha1 . '-0.png';
+-        file_exists($png) or Rerror ('R', 'PNG file does not exist:  
+' . $png, $input . $err);
+-        $url = r_url . DIRECTORY_SEPARATOR . $sha1 . '-0.png';
++        $jpg = r_dir . DIRECTORY_SEPARATOR . $sha1 . '-0.jpg';
++        file_exists($jpg) or Rerror ('R', 'JPEG file does not exist:  
+' . $jpg, $input . $err);
++        $url = r_url . DIRECTORY_SEPARATOR . $sha1 . '-0.jpg';
+          $ret = '<a href="' . $urlpdf . '"><img src="' . $url . '"  
+border="0" style="' . style . '"></a>';
+          for ($i=1; ; $i++) {
+-          $png = r_dir . DIRECTORY_SEPARATOR . $sha1 . '-'. $i .  
+'.png';
+-          $url = r_url . DIRECTORY_SEPARATOR . $sha1 . '-' . $i .  
+'.png';
+-          if (file_exists($png)) {
++          $jpg = r_dir . DIRECTORY_SEPARATOR . $sha1 . '-'. $i .  
+'.jpg';
++          $url = r_url . DIRECTORY_SEPARATOR . $sha1 . '-' . $i .  
+'.jpg';
++          if (file_exists($jpg)) {
+              $ret = $ret . '<a href="' . $urlpdf . '"><img src="' .  
+$url . '" border="0" style="' . $style . '"></a>';
+            } else {
+              break;
+
+
+From alex at transitive.com  Thu Sep  7 17:38:11 2006
+From: alex at transitive.com (Alex Brown)
+Date: Thu, 7 Sep 2006 16:38:11 +0100
+Subject: [R-sig-mediawiki] Revised Rext 0.02 with better error reporting
+Message-ID: <E55026AE-4483-45C2-B296-0FFD9B78F3AA@transitive.com>
+
+Attached is a version of Rext 0.02 with my previous changes plus a  
+set of changes to improve error reporting, including:
+
+if iframe images cannot render, you get the program text + the error
+
+if inline R (default output) contains an error, you get the error  
+message in red inlined with the wiki page
+
+if inline R (output=display) fails to render, you get the program  
+text + the error inlined with the wiki page
+
+In the long run, I plan to unify the 3 different output modes,  
+starting with default and display.
+
+-Alex
+
+<?php
+
+/*
+
+Plugins for Mediawiki
+
+(C) 2006- Sigbert Klinke (sigbert at wiwi.hu-berlin.de), Markus Cozowicz
+
+This program is free software; you can redistribute it and/or modify  
+it under the terms of the GNU General Public License as published by  
+the Free Software Foundation; either version 2 of the License, or (at  
+your option) any later version.
+
+This program is distributed in the hope that it will be useful, but  
+WITHOUT ANY WARRANTY; without even the implied warranty of  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU  
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License  
+along with this program; if not, write to the Free Software  
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA
+
+*/
+
+# for Special::Version:
+$wgExtensionCredits['parserhook'][] = array(
+         'name' => 'R extension',
+         'author' => 'Sigbert Klinke',
+         'url' => 'http://mars.wiwi.hu-berlin.de/mediawiki/sk/ 
+index.php/R_Plugin_for_MediaWiki',
+         'version' => 'v0.02',
+);
+
+
+// global params
+define('security',    1);
+// security = 0: no checks on code
+// security = 1: some R commands are forbidden
+
+define('htdocs',      RgetDefault('htdocs'));
+define('r_dir',       RgetDefault('r_dir'));
+define('r_cgi',       RgetDefault('r_cgi'));
+define('r_ext',       RgetDefault('r_ext'));
+define('r_url',       RgetDefault('r_url'));
+define('r_cmd',       RgetDefault('r_cmd'));
+define('convert',     RgetDefault('convert'));
+
+function RgetDefault ($key) {
+   #$hostname = php_uname('n');
+   $hostname = php_uname();
+   # First general constants
+   switch ($key) {
+     case 'htdocs' :
+       return RextractHtdocs(getcwd());
+     case 'r_dir':
+       return (getcwd() . DIRECTORY_SEPARATOR . 'Rfiles');
+     case 'r_cgi':
+       return (getcwd() . DIRECTORY_SEPARATOR . 'R.php');
+     case 'r_ext':
+       return (getcwd() . DIRECTORY_SEPARATOR . 'extensions' .  
+DIRECTORY_SEPARATOR . 'R');
+     case 'r_url':
+       return RextractUrl(r_dir);
+     case 'r_cmd':
+       $cmd = '/usr/bin/R';
+       if (file_exists($cmd)) { return ($cmd . ' --vanilla --quiet'); }
+       $cmd = '/usr/local/bin/R';
+       if (file_exists($cmd)) { return ($cmd . ' --vanilla --quiet'); }
+       $cmd = `which R`;
+       if ($cmd!='') {
+         $cmd = $cmd . ' --vanilla --quiet';
+         return $cmd;
+       }
+       break;
+     case 'convert':
+       $cmd = `which convert`;
+       if ($cmd!='') {
+         return $cmd;
+       }
+       break;
+   }
+   # now do system specific constants
+   if (strncmp(PHP_OS, 'WIN', 3)==0) {
+   # for Windows
+     switch ($key) {
+       case 'r_cmd':
+         return '../../../R/R-2.2.1/bin/R.exe --vanilla --quiet';
+       case 'convert':
+         return '../../../../ImageMagick-6.2.6-Q16/convert';
+     }
+   }
+   return '';
+}
+
+//Add the hook function call to an array defined earlier in the wiki  
+code execution.
+$wgExtensionFunctions[] = "RwfParse";
+
+//This is the hook function. It adds the tag to the wiki parser and  
+tells it what callback function to use.
+
+function RwfParse() {
+   global $wgParser;
+   # register the extension with the WikiText parser
+   $wgParser->setHook("R", "renderR" );
+   $wgParser->setHook("Rform", "renderRform" );
+}
+
+# The callback function for converting the input text to HTML output
+function RrenderFilename ($input) {
+   if (strncmp(PHP_OS, 'WIN', 3)==0) {
+     return str_replace('/', '\\', $input);
+   }
+   return ($input);
+}
+
+function RextractUrl ($input) {
+   $exparr = array('statwiki', 'teachwiki', 'intranet');
+   $farr   = split('[\//]', $input);
+   $cmp    = 'htdocs';
+   $n      = count($exparr);
+   for ($i=0; $i<$n; $i++) {
+     if (in_array($exparr[$i], $farr)) {
+       $cmp = $exparr[$i];
+     }
+   }
+   $n    = count($farr);
+   $ret  = '';
+   $htd  = 0;
+   for ($i = 0; $i < $n; $i++) {
+     if ($htd==1) {
+       $ret = $ret . '/' . $farr[$i];
+     }
+     if (strcmp($farr[$i], $cmp)==0) {
+       $htd = 1;
+     }
+   }
+   return $ret;
+}
+
+function RextractHtdocs ($input) {
+   $farr = split('[\//]', $input);
+   $n    = count($farr);
+   $ret  = '';
+   $htd  = 1;
+   for ($i = 0; $i < $n; $i++) {
+     if ($htd==1) {
+       $ret = $ret . $farr[$i] . DIRECTORY_SEPARATOR;
+     }
+     if (strcmp($farr[$i],'htdocs')==0) {
+       $htd = 0;
+     }
+   }
+   return $ret;
+}
+
+function RmakeStyle ($param, $default) {
+   $list = explode (';', $default);
+   $n    = count($list);
+   $arr  = array();
+   for ($i=0; $i<$n; $i++) {
+     $pair = explode (':', $list[$i]);
+     $arr[$pair[0]] = $pair[1];
+   }
+   $list = explode (';', $param);
+   $n    = count($list);
+   for ($i=0; $i<$n; $i++) {
+     $pair = explode (':', $list[$i]);
+     $arr[$pair[0]] = $pair[1];
+   }
+   $list = array_keys($arr);
+   $ret  = '';
+   for ($i=0; $i<$n; $i++) {
+     if (strlen($list[$i])>0) {
+       $ret = $ret . $list[$i] . ':' . $arr[$list[$i]] . ';';
+     }
+   }
+   return $ret;
+}
+
+function RmakeHTML ($input, $direct) {
+   if (!direct) {
+     $ret = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01  
+Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">';
+     $ret = $ret . '<html><head><meta http-equiv="expires"  
+content="0"></head><body>';
+     $ret = $ret . $input;
+//  $ret = $ret . '<hr>' . date("d.m.Y") . ' ' . date("H:i:s");
+     $ret = $ret . '</body></html>';
+   } else {
+     $ret = $input;
+   }
+   return $ret;
+}
+
+function renderRform( $input , $params ) {
+   array_key_exists('name', $params) or Rerror ('Rform', 'attribute  
+"name" required', $input);
+   $name = $params['name'];
+   $ret  = '<form action="' . RextractUrl(r_cgi) . '" method="post"  
+target="' . $name . '">';
+   $ret  = $ret . '<input type="hidden" name="R" value="' . $name .  
+'">';
+   $ret  = $ret . $input;
+   $ret  = $ret . '</form>';
+   return $ret;
+}
+
+function runShell ($cmd, &$newexit) {
+   $cmd = str_replace ("\n", ' ', $cmd);
+   $newout = array();
+   $out = "";
+   exec($cmd, $newout, $newexit);
+   foreach ($newout as $row) $out .= $row . "\n";
+
+   return($out);
+   return (shell_exec ($cmd));
+}
+
+function runR ($output, $convert, $sha1, $input, $direct, $echo, $ws) {
+// Generate a graphics
+
+
+   $prg = '';
+   if ($echo) {
+     $prg = '<pre>' . $input . '</pre>';
+   }
+   $err = "\n";
+   $rws = r_dir. DIRECTORY_SEPARATOR . $ws;
+   switch ($output) {
+     case 'display':
+       $png = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.png';
+       $pdf  = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.pdf';
+       $url = r_url . DIRECTORY_SEPARATOR . $sha1 . '.png';
+       $urlpdf = r_url . DIRECTORY_SEPARATOR . $sha1 . '.pdf';
+       $htm = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.html';
+       if (!file_exists($png) or onsave) {
+         $content = '';
+         if ($ws!='') {
+            $content = $content . 'sys.load.image("' . $rws . '",  
+TRUE)' ."\n";
+         }
+         $content = $content . 'rfiles<-"' . r_dir . '"' . "\n" .  
+'rpdf <- "' . $pdf . '"' . "\n";
+         $content = $content . 'source("' . r_ext .  
+DIRECTORY_SEPARATOR . 'StatWiki.r")' . "\n";
+         $content = $content . $input . "\n";
+         if ($ws!='') {
+            $content = $content . 'sys.save.image("' . $rws .  
+'")' ."\n";
+         }
+         $content = $content . 'q()';
+         $fn = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.R';
+         $fd = fopen ($fn, 'w') or Rerror ('R', 'can not open file:  
+' . $fn, $input);
+         fwrite ($fd, $content);
+         fclose ($fd);
+         $exit = 0;
+         $err = $err . runShell (r_cmd . ' 2>&1 < ' . $fn, $exit);
+         if ($exit == 0)
+                 $err = $err . runShell (convert . ' ' . $pdf . ' ' .  
+$convert . ' ' . $png,$exit);
+       }
+       if (!file_exists($png)) {
+         $png = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.png.0';
+         if (file_exists($png)) {
+           for ($i=0; ; $i++) {
+             $old = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.png.' . $i;
+             $new = r_dir . DIRECTORY_SEPARATOR . $sha1 . '-' . $i .  
+'.png';
+             if (file_exists($old)) {
+               rename ($old, $new);
+             } else {
+               break;
+             }
+           }
+         }
+         $png = r_dir . DIRECTORY_SEPARATOR . $sha1 . '-0.png';
+         if(file_exists($png))
+         {
+           file_exists($png) or Rerror ('R', 'PNG file does not  
+exist: ' . $png, $input . $err);
+           $url = r_url . DIRECTORY_SEPARATOR . $sha1 . '-0.png';
+           $ret = '<a href="' . $urlpdf . '"><img src="' . $url . '"  
+border="0" style="' . style . '"></a>';
+           for ($i=1; ; $i++) {
+             $png = r_dir . DIRECTORY_SEPARATOR . $sha1 . '-'. $i .  
+'.png';
+             $url = r_url . DIRECTORY_SEPARATOR . $sha1 . '-' . $i .  
+'.png';
+             if (file_exists($png)) {
+               $ret = $ret . '<a href="' . $urlpdf . '"><img src="' .  
+$url . '" border="0" style="' . $style . '"></a>';
+             } else {
+               break;
+             }
+           }
+         }
+         else
+         {
+           $ret = RmakeHTML('<pre>' . $err . '</pre>',$direct);
+         }
+       } else {
+         $ret = '<a href="' . $urlpdf . '"><img src="' . $url . '"  
+border="0" style="' . $style . '"></a>';
+       }
+       $fd = fopen ($htm, 'w') or Rerror ('R', 'can not open HTML  
+file: ' . $htm, $input . $err);
+       fwrite ($fd, RmakeHTML($prg . $ret, $direct));
+       fclose ($fd);
+       $ret = $htm;
+       break;
+     case 'html':
+       $htm  = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.html';
+       if (!file_exists($htm) or onsave) {
+         $content = '';
+         if ($ws!='') {
+            $content = $content . 'sys.load.image("' . $rws . '",  
+TRUE)' ."\n";
+         }
+         $content = $content . 'rfiles<-"' . r_dir . '"' . "\n";
+         $content = $content . 'source("' . r_ext .  
+DIRECTORY_SEPARATOR . 'StatWiki.r")' . "\n";
+         $content = $content . 'rhtml<-"' . $htm . '"' . "\n";
+         $content = $content . 'cat("", file=rhtml, append=FALSE)' .  
+"\n";
+         $content = $content . $input . "\n";
+         if ($ws!='') {
+            $content = $content . 'sys.save.image("' . $rws .  
+'")' ."\n";
+         }
+         $content = $content . 'q()';
+         $fn = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.R';
+         $fd = fopen ($fn, 'w') or Rerror ('R', 'Can not open file:  
+' . $fn, $input . $err);
+         fwrite ($fd, $content);
+         fclose ($fd);
+         $exit = 0;
+         $err = $err . runShell (r_cmd . ' 2>&1 < ' . $fn, $exit);
+       }
+       file_exists($htm) or Rerror ('R', 'HTML file does not exist:  
+' . $htm, $input . $err);
+       $cont = file_get_contents ($htm);
+       if (strpos ($cont, '<html>') === false) {
+         $fd = fopen ($htm, 'w') or Rerror ('R', 'can not open file:  
+' . $htm, $input . $err);
+         fwrite ($fd, RmakeHTML($prg . $cont, $direct));
+         fclose ($fd);
+       }
+       $ret = $htm;
+       break;
+     default:
+       $rst  = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.html';
+       if (!file_exists($rst) or onsave) {
+         $content = '';
+         if ($ws!='') {
+            $content = $content . 'sys.load.image("' . $rws . '",  
+TRUE)' ."\n";
+         }
+         $content = $content . 'rfiles<-"' . r_dir . '"' . "\n" .  
+$input . "\n";
+         if ($ws!='') {
+            $content = $content . 'sys.save.image("' . $rws .  
+'")' ."\n";
+         }
+         $content = $content . 'q()';
+         $fn = r_dir . '/' . $sha1 . '.R';
+         $fd = fopen ($fn, 'w') or Rerror ('R', 'Can not open file:  
+' . $fn, $input . $err);
+         fwrite ($fd, $content);
+         fclose ($fd);
+         $cmd = RrenderFilename(r_cmd . ' --slave 2>&1 < ' . $fn . '  
+ > ' . $rst);
+         $exit = 0;
+         $err = $err .runShell ($cmd,$exit);
+       }
+       file_exists($rst) or Rerror ('R', 'Text file does not exist:  
+' . $rst, $input . $err);
+       $cont = file_get_contents ($rst);
+       if (strpos ($cont, '<html>') === false) {
+         $fd = fopen ($rst, 'w') or Rerror ('R', 'can not open file:  
+' . $rst, $input . $err);
+         if ($exit == 0)
+         {
+           fwrite ($fd, RmakeHTML($prg . '<pre>' . $cont . '</pre>',  
+$direct));
+         }
+         else
+         {
+           fwrite ($fd, RmakeHTML($prg . '<pre>' . $cont . '<span  
+style="color:red">' . $err . '</span>' . '</pre>', $direct));
+         }
+         fclose ($fd);
+       }
+       $ret = $rst;
+   }
+   return $ret;
+}
+
+function RcheckCommands ($input) {
+   // Thanks to the R-php people :)
+   $banned = array('.C', '.Call', '.Call.graphics', '.External',  
+'.External.graphics',
+                   '.Fortran', '.readRDS', '.saveRDS', '.Script',  
+'.Tcl',
+                   '.Tcl.args', '.Tcl.callback', '.Tk.ID',  
+'.Tk.newwin', '.Tk.subwin',
+                   '.Tkroot', '.Tkwin', 'basename', 'browseURL',  
+'bzfile',
+                   'capture.output', 'close', 'close.screen',  
+'closeAllConnection', 'data.entry',
+                   'data.restore', 'dataentry', 'de', 'dev.control',  
+'dev.copy2eps',
+                   'dev.cur', 'dev.list', 'dev.next', 'dev.prev',  
+'dev.print',
+                   'dev.set', 'dev2bitmap', 'dget', 'dir', 'dir.create',
+                   'dirname', 'do.call', 'download.file', 'dput',  
+'dump',
+                   'dyn.load', 'edit', 'edit.data.frame', 'emacs',  
+'erase.screen',
+                   'example', 'fifo', 'file', 'file.access',  
+'file.append',
+                   'file.choose', 'file.copy', 'file.create',  
+'file.exists', 'file.info',
+                   'file.path', 'file.remove', 'file.rename',  
+'file.show', 'file.symlink',
+                   'fix', 'getConnection', 'getwd', 'graphics.off',  
+'gzcon',
+                   'gzfile', 'INSTALL', 'install.packages', 'jpeg',  
+'library.dynam',
+                   'list.files', 'loadhistory', 'locator',  
+'lookup.xport', 'make.packages.html',
+                   'make.socket', 'menu', 'open', 'parent.frame',  
+'path.expand',
+                   'pico', 'pictex', 'pipe', 'png',
+                   'postscript', 'print.socket', 'prompt',  
+'promptData', 'quartz',
+                   'R.home', 'R.version', 'read.00Index', 'read.dta',  
+'read.epiinfo',
+                   'read.fwf', 'read.mtp', 'read.socket',  
+'read.spss', 'read.ssd',
+                   'read.xport', 'readBin', 'readline', 'readLines',  
+'remove.packages',
+                   'Rprof', 'save', 'savehistory', 'scan', 'screen',
+                   'seek', 'setwd', 'showConnection', 'sink',  
+'sink.number',
+                   'socketConnection', 'source', 'split.screen',  
+'stderr', 'stdin',
+                   'stdout', 'sys.call', 'sys.calls', 'sys.frame',  
+'sys.frames',
+                   'sys.function', 'Sys.getenv', 'Sys.getlocale',  
+'Sys.info', 'sys.nframe',
+                   'sys.on.exit', 'sys.parent', 'sys.parents',  
+'Sys.putenv', 'Sys.sleep',
+                   'Sys.source', 'sys.source', 'sys.status',  
+'Sys.time', 'system',
+                   'system.file', 'tempfile', 'textConnection',  
+'tkpager', 'tkStartGUI',
+                   'unlink', 'unz', 'update.packages', 'url',  
+'url.show',
+                   'vi', 'write', 'write.dta', 'write.ftable',  
+'write.socket',
+                   'write.table', 'writeBin', 'writeLines', 'x11',  
+'X11',
+                   'xedit', 'xemacs', 'xfig', 'zip.file.extract');
+# 'pdf',
+   $n = count($banned);
+   for ($i=0; $i<$n; $i++) {
+     if (substr_count($input, $banned[$i])>0) {
+     // okay, we found something forbidden, now we need a regular  
+expression to check if it is a function call like 'name  (' or 'name  
+=' !
+       $pattern = '/\b' . str_replace ('.', '\.', $banned[$i]) . '[\W] 
+*[\(\=]+/';
+       if (preg_match ($pattern, $input, $match) > 0) { return $banned 
+[$i]; }
+#      preg_match ($pattern, $input, $match);
+#      Rerror('Check', '', print_r($match, true));
+     }
+   }
+   return '';
+}
+
+function renderR( $input , $params ) {
+   //Eval the code between the tags.
+   $style   = array_key_exists('style', $params)   ? ' style="' .  
+$params['style'] . '"'  : '';
+   $output  = array_key_exists('output', $params)  ? $params 
+['output']  : 'text';
+   $alt     = array_key_exists('alt', $params)     ? $params 
+['alt']     : $input;
+   $convert = array_key_exists('convert', $params) ? $params 
+['convert'] : '';
+   $onsave  = array_key_exists('onsave', $params);
+   $echo    = array_key_exists('echo', $params);
+   $direct  = !array_key_exists('iframe', $params);
+   $sha1    = md5($input . $output . $style);
+   $ws      = array_key_exists('workspace', $params)? $params 
+['workspace'] : '';
+
+   // security checks
+   if (security>0) {
+     $chkres = RcheckCommands($input);
+#    Rerror ('R', $chkres, $input);
+     (strlen($chkres)==0) or Rerror ('R', 'security check failed:  
+used banned command or parameter "' . $chkres . '"', $input);
+     $input = $input . "\n#" . $chkres;
+   }
+   (preg_match('/\W+/', $ws)==0) or Rerror ('R', 'security check  
+failed: invalid workspace name "' . $ws . '"', $input);
+   // check if iframe is given, if not then assume direct output
+   $iframe = 'width:100%;height:250px;';
+   if (!$direct) {
+     $iframe  = RmakeStyle ($params['iframe'], $iframe);
+   }
+   if (array_key_exists('name', $params)) {
+   // we may reuse the program ..., thus save all infos
+     $sav = r_dir . DIRECTORY_SEPARATOR . $params['name'] . '.sav';
+     $fd = fopen ($sav, 'w') or Rerror ('R', 'can not open file: ' .  
+$sav, $input);
+     fwrite ($fd, '@output  ' . $output . "\n");
+     fwrite ($fd, '@convert ' . $convert . "\n");
+     fwrite ($fd, '@sha '     . $sha1 . "\n");
+     fwrite ($fd, '@direct '  . $direct . "\n");
+     fwrite ($fd, '@echo '    . $echo . "\n");
+     fwrite ($fd, '@workspace '. $ws . "\n");
+     fwrite ($fd, $input);
+     fclose ($fd);
+   }
+
+   // execute R program
+   $fn   = runR ($output, $convert, $sha1, $input, $direct, $echo, $ws);
+   $name = array_key_exists('name', $params) ? $params['name'] : $sha1;
+
+   // now switch between direct output and iframe output
+   if ($direct) {
+     $ret = file_get_contents ($fn);
+   } else {
+     $ret = '<iframe name="' . $name . '" style="' . $iframe . '"  
+src="' . RextractUrl ($fn) . '">Sorry, your browser does not support  
+&lt;iframe...&gt;... &lt;/iframe&gt; !</iframe>';
+   }
+
+   return ($ret);
+}
+
+function Rerror ($cmd, $msg, $input) {
+   $txt = '<pre>ERROR: &lt;' . $cmd . '...&gt; ' . $msg . ' <em>in</ 
+em></pre><p>';
+   $txt = $txt . '<pre>' . $input . '</pre>';
+   die ($txt);
+   return 0;
+}
+
+function Rlog ($msg) {
+   $fn = r_dir . DIRECTORY_SEPARATOR . 'R.log';
+   $fd = fopen ($fn, 'a');
+   fwrite ($fd, date('r') . ' ' . $msg . "\n");
+   fclose($fd);
+}
+
+?>
+
+
+From sigbert at wiwi.hu-berlin.de  Tue Sep 26 09:19:48 2006
+From: sigbert at wiwi.hu-berlin.de (Sigbert Klinke)
+Date: Tue, 26 Sep 2006 09:19:48 +0200
+Subject: [R-sig-mediawiki] R-News article
+Message-ID: <4518D494.9020403@wiwi.hu-berlin.de>
+
+Hi,
+
+I'am just writing an article for the R News about the extension. The 
+reviewers have requested that I say more detailed for what the extension 
+can being used. So could you tell me in which context you are using the 
+extension?
+
+Thanks in advance
+
+  Sigbert
+
+
+From alex at transitive.com  Tue Sep 26 15:03:44 2006
+From: alex at transitive.com (Alex Brown)
+Date: Tue, 26 Sep 2006 14:03:44 +0100
+Subject: [R-sig-mediawiki] Revised Rext 0.03 with better error reporting
+In-Reply-To: <E55026AE-4483-45C2-B296-0FFD9B78F3AA@transitive.com>
+References: <E55026AE-4483-45C2-B296-0FFD9B78F3AA@transitive.com>
+Message-ID: <4122C8B5-C97E-4F6E-ADBF-26E10448ED41@transitive.com>
+
+Attached is a version of Rext 0.03 with my previous changes plus a  
+set of changes to improve error reporting, including:
+
+if iframe images cannot render, you get the program text + the error
+
+if inline R (default output) contains an error, you get the error  
+message in red inlined with the wiki page
+
+if inline R (output=display) fails to render, you get the program  
+text + the error inlined with the wiki page
+
+In the long run, I plan to unify the 3 different output modes,  
+starting with default and display - I have a prototype (not included)  
+that does this.
+
+I have attached a patch as well as the complete file.
+
+-Alex
+
+====
+
+patch from 0.03
+
+--- Rext_orig.php       2006-09-26 12:56:55.345076291 +0100
++++ Rext.php_3_with_debug       2006-09-26 13:57:03.412252560 +0100
+@@ -36,7 +36,7 @@
+defined('convert')   || define('convert',   getCmd('', 'convert', ''));
+defined('sudo')      || define('sudo',      getCmd('', 'sudo', ' -u  
+' . sudouser . ' '));
+defined('chmod')     || define('chmod',     getCmd('', 'chmod', ' 664  
+'));
+-defined('r_cmd')     || define('r_cmd',     getCmd('', 'R', ' -- 
+vanilla'));
++defined('r_cmd')     || define('r_cmd',     getCmd('', 'R', ' -- 
+vanilla --quiet'));
+defined('r_dir')     || define('r_dir',     getcwd() .  
+DIRECTORY_SEPARATOR . 'Rfiles' );
+defined('r_url')     || define('r_url',     extractUrl(r_dir));
+@@ -103,17 +103,21 @@
+    return $ret;
+}
+-function runRinShell ($cmd, $chmf) {
++function runRinShell ($cmd, $chmf, &$r_exitcode) {
++  $stdout = "";
+    if (security>1) {
+      $msg = shell_exec (sudo . $cmd);
+      if ($chmf!='') {
+        $cmd = sudo . chmod . $chmf;
+-      shell_exec ($cmd);
++      exec ($cmd, $stdout, $r_exitcode);
+#      error ('R', $cmd, $msg);
+      }
+    } else {
+-    $msg = shell_exec ($cmd);
++    exec ($cmd, $stdout, $r_exitcode);
+    }
++
++  foreach($stdout as $row) $msg .= $row . "\n";
++
+#  error ('R', $cmd, $msg);
+    return ($msg);
+}
+@@ -138,6 +142,8 @@
+        $url = r_url . DIRECTORY_SEPARATOR . $sha1 . '.jpg';
+        $urlpdf = r_url . DIRECTORY_SEPARATOR . $sha1 . '.pdf';
+        $htm = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.html';
++
++      $r_exitcode = 0;
+        if (!file_exists($jpg) or onsave) {
+          $content = '';
+          if ($ws!='') {
+@@ -153,38 +159,48 @@
+          $fn = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.R';
+          $fd = fopen ($fn, 'w') or error ('R', 'can not open file:  
+' . $fn, $input);
+          fwrite ($fd, $content);
+-        fclose ($fd);
+-        $err = $err . runRinShell (r_cmd . ' < ' . $fn, '');
+-        $err = $err . runShell (convert . ' ' . $pdf . ' ' .  
+$convert . ' ' . $jpg);
++        fclose ($fd);
++        $err = $err . runRinShell (r_cmd . ' 2>&1 < ' . $fn, '',  
+$r_exitcode);
++        if ($r_exitcode == 0)
++        {
++          $err = $err . runShell (convert . ' ' . $pdf . ' ' .  
+$convert . ' ' . $jpg);
++        }
+        }
+-      if (!file_exists($jpg)) {
+-        $jpg = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.jpg.0';
+-        if (file_exists($jpg)) {
+-          for ($i=0; ; $i++) {
+-            $old = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.jpg.' . $i;
+-            $new = r_dir . DIRECTORY_SEPARATOR . $sha1 . '-' . $i .  
+'.jpg';
+-            if (file_exists($old)) {
+-              rename ($old, $new);
++      if ($r_exitcode == 0)
++      {
++        if (!file_exists($jpg)) {
++          $jpg = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.jpg.0';
++          if (file_exists($jpg)) {
++            for ($i=0; ; $i++) {
++              $old = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.jpg.' .  
+$i;
++              $new = r_dir . DIRECTORY_SEPARATOR . $sha1 . '-' .  
+$i . '.jpg';
++              if (file_exists($old)) {
++                rename ($old, $new);
++              } else {
++                break;
++              }
++            }
++          }
++          $jpg = r_dir . DIRECTORY_SEPARATOR . $sha1 . '-0.jpg';
++          file_exists($jpg) or error ('R', 'JPEG file does not  
+exist: ' . $jpg, $input . $err);
++          $url = r_url . DIRECTORY_SEPARATOR . $sha1 . '-0.jpg';
++          $ret = '<a href="' . $urlpdf . '"><img src="' . $url . '"  
+border="0" style="' . style . '"></a>';
++          for ($i=1; ; $i++) {
++            $jpg = r_dir . DIRECTORY_SEPARATOR . $sha1 . '-'. $i .  
+'.jpg';
++            $url = r_url . DIRECTORY_SEPARATOR . $sha1 . '-' . $i .  
+'.jpg';
++            if (file_exists($jpg)) {
++              $ret = $ret . '<a href="' . $urlpdf . '"><img src="' .  
+$url . '" border="0" style="' . $style . '"></a>';
+              } else {
+                break;
+              }
+-          }
++          }
++        } else {
++          $ret = '<a href="' . $urlpdf . '"><img src="' . $url . '"  
+border="0" style="' . $style . '"></a>';
+          }
+-        $jpg = r_dir . DIRECTORY_SEPARATOR . $sha1 . '-0.jpg';
+-        file_exists($jpg) or error ('R', 'JPEG file does not exist:  
+' . $jpg, $input . $err);
+-        $url = r_url . DIRECTORY_SEPARATOR . $sha1 . '-0.jpg';
+-        $ret = '<a href="' . $urlpdf . '"><img src="' . $url . '"  
+border="0" style="' . style . '"></a>';
+-        for ($i=1; ; $i++) {
+-          $jpg = r_dir . DIRECTORY_SEPARATOR . $sha1 . '-'. $i .  
+'.jpg';
+-          $url = r_url . DIRECTORY_SEPARATOR . $sha1 . '-' . $i .  
+'.jpg';
+-          if (file_exists($jpg)) {
+-            $ret = $ret . '<a href="' . $urlpdf . '"><img src="' .  
+$url . '" border="0" style="' . $style . '"></a>';
+-          } else {
+-            break;
+-          }
+-        }
+-      } else {
+-        $ret = '<a href="' . $urlpdf . '"><img src="' . $url . '"  
+border="0" style="' . $style . '"></a>';
++      }
++      else
++      {
++        $ret = '<pre>' . $err . '</pre>';
+        }
+        $fd = fopen ($htm, 'w') or error ('R', 'can not open HTML  
+file: ' . $htm, $input . $err);
+        fwrite ($fd, makeHTML($prg . $ret, $direct));
+@@ -211,7 +227,8 @@
+          $fd = fopen ($fn, 'w') or error ('R', 'Can not open file:  
+' . $fn, $input . $err);
+          fwrite ($fd, $content);
+          fclose ($fd);
+-        $err = $err . runRinShell (r_cmd . ' < ' . $fn, $htm);
++        $r_exitcode = 0;
++        $err = $err . runRinShell (r_cmd . ' < ' . $fn, $htm,  
+$r_exitcode);
+        }
+        file_exists($htm) or error ('R', 'HTML file does not exist:  
+' . $htm, $input . $err);
+        $cont = file_get_contents ($htm);
+@@ -238,14 +255,22 @@
+          $fd = fopen ($fn, 'w') or error ('R', 'Can not open file:  
+' . $fn, $input . $err);
+          fwrite ($fd, $content);
+          fclose ($fd);
+-        $cmd = renderFilename(r_cmd . ' --slave < ' . $fn . ' > ' .  
+$rst);
+-        $err = $err . runRinShell ($cmd, $rst);
++        $cmd = renderFilename(r_cmd . ' --slave 2>&1 < ' . $fn . ' >  
+' . $rst);
++        $r_exitcode = 0;
++        $err = $err . runRinShell ($cmd, $rst, $r_exitcode);
+        }
+        file_exists($rst) or error ('R', 'Text file does not exist:  
+' . $rst, $input . $err);
+        $cont = file_get_contents ($rst);
+        if (strpos ($cont, '<html>') === false) {
+          $fd = fopen ($rst, 'w') or error ('R', 'can not open file:  
+' . $rst, $input . $err);
+-        fwrite ($fd, makeHTML($prg . '<pre>' . $cont . '</pre>',  
+$direct));
++        if ($r_exitcode == 0)
++        {
++          fwrite ($fd, makeHTML($prg . '<pre>' . $cont . '</pre>',  
+$direct));
++        }
++        else
++        {
++          fwrite ($fd, makeHTML($prg . '<pre>' . $cont . '<span  
+style="color:red">' . $err . '</span>' . '</pre>', $direct));
++        }
+          fclose ($fd);
+        }
+        $ret = $rst;
+
+
+====
+
+actual file:
+
+<?php
+
+/*
+
+Plugins for Mediawiki
+
+(C) 2006- Sigbert Klinke (sigbert at wiwi.hu-berlin.de), Markus Cozowicz
+
+This program is free software; you can redistribute it and/or modify  
+it under the terms of the GNU General Public License as published by  
+the Free Software Foundation; either version 2 of the License, or (at  
+your option) any later version.
+
+This program is distributed in the hope that it will be useful, but  
+WITHOUT ANY WARRANTY; without even the implied warranty of  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU  
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License  
+along with this program; if not, write to the Free Software  
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA
+
+*/
+
+# for Special::Version:
+$wgExtensionCredits['parserhook'][] = array(
+         'name' => 'R extension',
+         'author' => 'Sigbert Klinke',
+         'url' => 'http://mars.wiwi.hu-berlin.de/mediawiki/sk/ 
+index.php/R_Plugin_for_MediaWiki',
+         'version' => 'v0.03',
+);
+
+// global params
+if (!defined('extbase')) {
+   include ('extbase.php');
+}
+
+// security = 0: no checks on code
+// security = 1: some R commands are forbidden
+// security = 2: sudo
+defined('security')  || define('security',  2);
+defined('sudouser')  || define('sudouser', 'rd');
+
+defined('convert')   || define('convert',   getCmd('', 'convert', ''));
+defined('sudo')      || define('sudo',      getCmd('', 'sudo', ' -u  
+' . sudouser . ' '));
+defined('chmod')     || define('chmod',     getCmd('', 'chmod', ' 664  
+'));
+defined('r_cmd')     || define('r_cmd',     getCmd('', 'R', ' -- 
+vanilla --quiet'));
+
+defined('r_dir')     || define('r_dir',     getcwd() .  
+DIRECTORY_SEPARATOR . 'Rfiles' );
+defined('r_url')     || define('r_url',     extractUrl(r_dir));
+defined('r_cgi')     || define('r_cgi',     getcwd() .  
+DIRECTORY_SEPARATOR . 'R.php');
+defined('r_ext')     || define('r_ext',     getcwd() .  
+DIRECTORY_SEPARATOR . 'extensions' . DIRECTORY_SEPARATOR . 'R');
+
+
+//Add the hook function call to an array defined earlier in the wiki  
+code execution.
+$wgExtensionFunctions[] = "wfRParse";
+
+//This is the hook function. It adds the tag to the wiki parser and  
+tells it what callback function to use.
+
+function wfRParse() {
+   global $wgParser;
+   # register the extension with the WikiText parser
+   $wgParser->setHook("R", "renderR" );
+   $wgParser->setHook("Rform", "renderRform" );
+}
+
+function makeStyle ($param, $default) {
+   $list = explode (';', $default);
+   $n    = count($list);
+   $arr  = array();
+   for ($i=0; $i<$n; $i++) {
+     $pair = explode (':', $list[$i]);
+     $arr[$pair[0]] = $pair[1];
+   }
+   $list = explode (';', $param);
+   $n    = count($list);
+   for ($i=0; $i<$n; $i++) {
+     $pair = explode (':', $list[$i]);
+     $arr[$pair[0]] = $pair[1];
+   }
+   $list = array_keys($arr);
+   $ret  = '';
+   for ($i=0; $i<$n; $i++) {
+     if (strlen($list[$i])>0) {
+       $ret = $ret . $list[$i] . ':' . $arr[$list[$i]] . ';';
+     }
+   }
+   return $ret;
+}
+
+function makeHTML ($input, $direct) {
+   if (!direct) {
+     $ret = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01  
+Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">';
+     $ret = $ret . '<html><head><meta http-equiv="expires"  
+content="0"></head><body>';
+     $ret = $ret . $input;
+//  $ret = $ret . '<hr>' . date("d.m.Y") . ' ' . date("H:i:s");
+     $ret = $ret . '</body></html>';
+   } else {
+     $ret = $input;
+   }
+   return $ret;
+}
+
+function renderRform( $input , $params ) {
+   array_key_exists('name', $params) or error ('Rform', 'attribute  
+"name" required', $input);
+   $name = $params['name'];
+   $ret  = '<form action="' . extractUrl(r_cgi) . '" method="post"  
+target="' . $name . '">';
+   $ret  = $ret . '<input type="hidden" name="R" value="' . $name .  
+'">';
+   $ret  = $ret . $input;
+   $ret  = $ret . '</form>';
+   return $ret;
+}
+
+function runRinShell ($cmd, $chmf, &$r_exitcode) {
+   $stdout = "";
+   if (security>1) {
+     $msg = shell_exec (sudo . $cmd);
+     if ($chmf!='') {
+       $cmd = sudo . chmod . $chmf;
+       exec ($cmd, $stdout, $r_exitcode);
+#      error ('R', $cmd, $msg);
+     }
+   } else {
+     exec ($cmd, $stdout, $r_exitcode);
+   }
+
+   foreach($stdout as $row) $msg .= $row . "\n";
+
+#  error ('R', $cmd, $msg);
+   return ($msg);
+}
+
+function runShell ($cmd) {
+   $cmd = str_replace ("\n", ' ', $cmd);
+   return (shell_exec ($cmd));
+}
+
+function runR ($output, $convert, $sha1, $input, $direct, $echo, $ws) {
+// Generate a graphics
+   $prg = '';
+   if ($echo) {
+     $prg = '<pre>' . $input . '</pre>';
+   }
+   $err = "\n";
+   $rws = r_dir. DIRECTORY_SEPARATOR . $ws;
+   switch ($output) {
+     case 'display':
+       $jpg = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.jpg';
+       $pdf  = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.pdf';
+       $url = r_url . DIRECTORY_SEPARATOR . $sha1 . '.jpg';
+       $urlpdf = r_url . DIRECTORY_SEPARATOR . $sha1 . '.pdf';
+       $htm = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.html';
+
+       $r_exitcode = 0;
+       if (!file_exists($jpg) or onsave) {
+         $content = '';
+         if ($ws!='') {
+            $content = $content . 'sys.load.image("' . $rws . '",  
+TRUE)' ."\n";
+         }
+         $content = $content . 'rfiles<-"' . r_dir . '"' . "\n" .  
+'rpdf <- "' . $pdf . '"' . "\n";
+         $content = $content . 'source("' . r_ext .  
+DIRECTORY_SEPARATOR . 'StatWiki.r")' . "\n";
+         $content = $content . $input . "\n";
+         if ($ws!='') {
+            $content = $content . 'sys.save.image("' . $rws .  
+'")' ."\n";
+         }
+         $content = $content . 'q()';
+         $fn = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.R';
+         $fd = fopen ($fn, 'w') or error ('R', 'can not open file:  
+' . $fn, $input);
+         fwrite ($fd, $content);
+         fclose ($fd);
+         $err = $err . runRinShell (r_cmd . ' 2>&1 < ' . $fn, '',  
+$r_exitcode);
+         if ($r_exitcode == 0)
+         {
+           $err = $err . runShell (convert . ' ' . $pdf . ' ' .  
+$convert . ' ' . $jpg);
+         }
+       }
+       if ($r_exitcode == 0)
+       {
+         if (!file_exists($jpg)) {
+           $jpg = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.jpg.0';
+           if (file_exists($jpg)) {
+             for ($i=0; ; $i++) {
+               $old = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.jpg.' .  
+$i;
+               $new = r_dir . DIRECTORY_SEPARATOR . $sha1 . '-' .  
+$i . '.jpg';
+               if (file_exists($old)) {
+                 rename ($old, $new);
+               } else {
+                 break;
+               }
+             }
+           }
+           $jpg = r_dir . DIRECTORY_SEPARATOR . $sha1 . '-0.jpg';
+           file_exists($jpg) or error ('R', 'JPEG file does not  
+exist: ' . $jpg, $input . $err);
+           $url = r_url . DIRECTORY_SEPARATOR . $sha1 . '-0.jpg';
+           $ret = '<a href="' . $urlpdf . '"><img src="' . $url . '"  
+border="0" style="' . style . '"></a>';
+           for ($i=1; ; $i++) {
+             $jpg = r_dir . DIRECTORY_SEPARATOR . $sha1 . '-'. $i .  
+'.jpg';
+             $url = r_url . DIRECTORY_SEPARATOR . $sha1 . '-' . $i .  
+'.jpg';
+             if (file_exists($jpg)) {
+               $ret = $ret . '<a href="' . $urlpdf . '"><img src="' .  
+$url . '" border="0" style="' . $style . '"></a>';
+             } else {
+               break;
+             }
+           }
+         } else {
+           $ret = '<a href="' . $urlpdf . '"><img src="' . $url . '"  
+border="0" style="' . $style . '"></a>';
+         }
+       }
+       else
+       {
+         $ret = '<pre>' . $err . '</pre>';
+       }
+       $fd = fopen ($htm, 'w') or error ('R', 'can not open HTML  
+file: ' . $htm, $input . $err);
+       fwrite ($fd, makeHTML($prg . $ret, $direct));
+       fclose ($fd);
+       $ret = $htm;
+       break;
+     case 'html':
+       $htm  = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.html';
+       if (!file_exists($htm) or onsave) {
+         $content = '';
+         if ($ws!='') {
+            $content = $content . 'sys.load.image("' . $rws . '",  
+TRUE)' ."\n";
+         }
+         $content = $content . 'rfiles<-"' . r_dir . '"' . "\n";
+         $content = $content . 'source("' . r_ext .  
+DIRECTORY_SEPARATOR . 'StatWiki.r")' . "\n";
+         $content = $content . 'rhtml<-"' . $htm . '"' . "\n";
+         $content = $content . 'cat("", file=rhtml, append=FALSE)' .  
+"\n";
+         $content = $content . $input . "\n";
+         if ($ws!='') {
+            $content = $content . 'sys.save.image("' . $rws .  
+'")' ."\n";
+         }
+         $content = $content . 'q()';
+         $fn = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.R';
+         $fd = fopen ($fn, 'w') or error ('R', 'Can not open file:  
+' . $fn, $input . $err);
+         fwrite ($fd, $content);
+         fclose ($fd);
+         $r_exitcode = 0;
+         $err = $err . runRinShell (r_cmd . ' < ' . $fn, $htm,  
+$r_exitcode);
+       }
+       file_exists($htm) or error ('R', 'HTML file does not exist:  
+' . $htm, $input . $err);
+       $cont = file_get_contents ($htm);
+       if (strpos ($cont, '<html>') === false) {
+         $fd = fopen ($htm, 'w') or error ('R', 'can not open file:  
+' . $htm, $input . $err);
+         fwrite ($fd, makeHTML($prg . $cont, $direct));
+         fclose ($fd);
+       }
+       $ret = $htm;
+       break;
+     default:
+       $rst  = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.html';
+       if (!file_exists($rst) or onsave) {
+         $content = '';
+         if ($ws!='') {
+            $content = $content . 'sys.load.image("' . $rws . '",  
+TRUE)' ."\n";
+         }
+         $content = $content . 'rfiles<-"' . r_dir . '"' . "\n" .  
+$input . "\n";
+         if ($ws!='') {
+            $content = $content . 'sys.save.image("' . $rws .  
+'")' ."\n";
+         }
+         $content = $content . 'q()';
+         $fn = r_dir . '/' . $sha1 . '.R';
+         $fd = fopen ($fn, 'w') or error ('R', 'Can not open file:  
+' . $fn, $input . $err);
+         fwrite ($fd, $content);
+         fclose ($fd);
+         $cmd = renderFilename(r_cmd . ' --slave 2>&1 < ' . $fn . ' >  
+' . $rst);
+         $r_exitcode = 0;
+         $err = $err . runRinShell ($cmd, $rst, $r_exitcode);
+       }
+       file_exists($rst) or error ('R', 'Text file does not exist:  
+' . $rst, $input . $err);
+       $cont = file_get_contents ($rst);
+       if (strpos ($cont, '<html>') === false) {
+         $fd = fopen ($rst, 'w') or error ('R', 'can not open file:  
+' . $rst, $input . $err);
+         if ($r_exitcode == 0)
+         {
+           fwrite ($fd, makeHTML($prg . '<pre>' . $cont . '</pre>',  
+$direct));
+         }
+         else
+         {
+           fwrite ($fd, makeHTML($prg . '<pre>' . $cont . '<span  
+style="color:red">' . $err . '</span>' . '</pre>', $direct));
+         }
+         fclose ($fd);
+       }
+       $ret = $rst;
+   }
+   return $ret;
+}
+
+function checkCommands ($input) {
+   // Thanks to the R-php people :)
+   $banned = array('.C', '.Call', '.Call.graphics', '.External',  
+'.External.graphics',
+                   '.Fortran', '.readRDS', '.saveRDS', '.Script',  
+'.Tcl',
+                   '.Tcl.args', '.Tcl.callback', '.Tk.ID',  
+'.Tk.newwin', '.Tk.subwin',
+                   '.Tkroot', '.Tkwin', 'basename', 'browseURL',  
+'bzfile',
+                   'capture.output', 'close', 'close.screen',  
+'closeAllConnection', 'data.entry',
+                   'data.restore', 'dataentry', 'de', 'dev.control',  
+'dev.copy2eps',
+                   'dev.cur', 'dev.list', 'dev.next', 'dev.prev',  
+'dev.print',
+                   'dev.set', 'dev2bitmap', 'dget', 'dir', 'dir.create',
+                   'dirname', 'do.call', 'download.file', 'dput',  
+'dump',
+                   'dyn.load', 'edit', 'edit.data.frame', 'emacs',  
+'erase.screen',
+                   'example', 'fifo', 'file', 'file.access',  
+'file.append',
+                   'file.choose', 'file.copy', 'file.create',  
+'file.exists', 'file.info',
+                   'file.path', 'file.remove', 'file.rename',  
+'file.show', 'file.symlink',
+                   'fix', 'getConnection', 'getwd', 'graphics.off',  
+'gzcon',
+                   'gzfile', 'INSTALL', 'install.packages', 'jpeg',  
+'library.dynam',
+                   'list.files', 'loadhistory', 'locator',  
+'lookup.xport', 'make.packages.html',
+                   'make.socket', 'menu', 'open', 'parent.frame',  
+'path.expand',
+                   'pico', 'pictex', 'pipe', 'png',
+                   'postscript', 'print.socket', 'prompt',  
+'promptData', 'quartz',
+                   'R.home', 'R.version', 'read.00Index', 'read.dta',  
+'read.epiinfo',
+                   'read.fwf', 'read.mtp', 'read.socket',  
+'read.spss', 'read.ssd',
+                   'read.xport', 'readBin', 'readline', 'readLines',  
+'remove.packages',
+                   'Rprof', 'save', 'savehistory', 'scan', 'screen',
+                   'seek', 'setwd', 'showConnection', 'sink',  
+'sink.number',
+                   'socketConnection', 'source', 'split.screen',  
+'stderr', 'stdin',
+                   'stdout', 'sys.call', 'sys.calls', 'sys.frame',  
+'sys.frames',
+                   'sys.function', 'Sys.getenv', 'Sys.getlocale',  
+'Sys.info', 'sys.nframe',
+                   'sys.on.exit', 'sys.parent', 'sys.parents',  
+'Sys.putenv', 'Sys.sleep',
+                   'Sys.source', 'sys.source', 'sys.status',  
+'Sys.time', 'system',
+                   'system.file', 'tempfile', 'textConnection',  
+'tkpager', 'tkStartGUI',
+                   'unlink', 'unz', 'update.packages', 'url',  
+'url.show',
+                   'vi', 'write', 'write.dta', 'write.ftable',  
+'write.socket',
+                   'write.table', 'writeBin', 'writeLines', 'x11',  
+'X11',
+                   'xedit', 'xemacs', 'xfig', 'zip.file.extract');
+# 'pdf',
+   $n = count($banned);
+   for ($i=0; $i<$n; $i++) {
+     if (substr_count($input, $banned[$i])>0) {
+     // okay, we found something forbidden, now we need a regular  
+expression to check if it is a function call like 'name  (', 'name ='  
+or 'name.' !
+       $pattern = '/\b' . str_replace ('.', '\.', $banned[$i]) . '[\W] 
+*[\(\=\.]+/';
+       if (preg_match ($pattern, $input, $match) > 0) { return $banned 
+[$i]; }
+#      preg_match ($pattern, $input, $match);
+#      error('Check', '', print_r($match, true));
+     }
+   }
+   return '';
+}
+
+function renderR( $input , $params ) {
+   //Eval the code between the tags.
+   $style   = array_key_exists('style', $params)   ? ' style="' .  
+$params['style'] . '"'  : '';
+   $output  = array_key_exists('output', $params)  ? $params 
+['output']  : 'text';
+   $alt     = array_key_exists('alt', $params)     ? $params 
+['alt']     : $input;
+   $convert = array_key_exists('convert', $params) ? $params 
+['convert'] : '';
+   $onsave  = array_key_exists('onsave', $params);
+   $echo    = array_key_exists('echo', $params);
+   $direct  = !array_key_exists('iframe', $params);
+   $sha1    = sha1($input . $output . $style);
+   $ws      = array_key_exists('workspace', $params)? $params 
+['workspace'] : '';
+
+   // security checks
+   if (security>0) {
+     $chkres = checkCommands($input);
+#    error ('R', $chkres, $input);
+     (strlen($chkres)==0) or error ('R', 'security check failed: used  
+banned command or parameter "' . $chkres . '"', $input);
+     $input = $input . "\n#" . $chkres;
+   }
+   (preg_match('/\W+/', $ws)==0) or error ('R', 'security check  
+failed: invalid workspace name "' . $ws . '"', $input);
+   // check if iframe is given, if not then assume direct output
+   $iframe = 'width:100%;height:250px;';
+   if (!$direct) {
+     $iframe  = makeStyle ($params['iframe'], $iframe);
+   }
+   if (array_key_exists('name', $params)) {
+   // we may reuse the program ..., thus save all infos
+     $sav = r_dir . DIRECTORY_SEPARATOR . $params['name'] . '.sav';
+     $fd = fopen ($sav, 'w') or error ('R', 'can not open file: ' .  
+$sav, $input);
+     fwrite ($fd, '@output  ' . $output . "\n");
+     fwrite ($fd, '@convert ' . $convert . "\n");
+     fwrite ($fd, '@sha '     . $sha1 . "\n");
+     fwrite ($fd, '@direct '  . $direct . "\n");
+     fwrite ($fd, '@echo '    . $echo . "\n");
+     fwrite ($fd, '@workspace '. $ws . "\n");
+     fwrite ($fd, $input);
+     fclose ($fd);
+   }
+
+   // execute R program
+   $fn   = runR ($output, $convert, $sha1, $input, $direct, $echo, $ws);
+   $name = array_key_exists('name', $params) ? $params['name'] : $sha1;
+
+   // now switch between direct output and iframe output
+   if ($direct) {
+     $ret = file_get_contents ($fn);
+   } else {
+     $ret = '<iframe name="' . $name . '" style="' . $iframe . '"  
+src="' . extractUrl ($fn) . '">Sorry, your browser does not support  
+&lt;iframe...&gt;... &lt;/iframe&gt; !</iframe>';
+   }
+
+   return ($ret);
+}
+
+?>
+
+
+From alex at transitive.com  Tue Sep 26 15:08:09 2006
+From: alex at transitive.com (Alex Brown)
+Date: Tue, 26 Sep 2006 14:08:09 +0100
+Subject: [R-sig-mediawiki] output image type patch (png/jpg) for 0.03
+Message-ID: <7F22C798-0353-450E-A9F6-2515F6CCD56B@transitive.com>
+
+Attached is a patch for 0.03 which switches the default image type to  
+png, and provides a single configuration variable to selected between  
+png and jpg.
+
+-Alex
+
+====
+
+Patch:
+
+--- ../../RinMW_003/extensions/Rext.php 2006-08-08 09:17:45.000000000  
++0100
++++ Rext.php.png_substitute     2006-09-26 12:31:35.000000000 +0100
+@@ -42,7 +42,7 @@
+defined('r_url')     || define('r_url',     extractUrl(r_dir));
+defined('r_cgi')     || define('r_cgi',     getcwd() .  
+DIRECTORY_SEPARATOR . 'R.php');
+defined('r_ext')     || define('r_ext',     getcwd() .  
+DIRECTORY_SEPARATOR . 'extensions' . DIRECTORY_SEPARATOR . 'R');
+-
++defined('r_img')     || define('r_img',     '.png');
+//Add the hook function call to an array defined earlier in the wiki  
+code execution.
+$wgExtensionFunctions[] = "wfRParse";
+@@ -133,12 +133,12 @@
+    $rws = r_dir. DIRECTORY_SEPARATOR . $ws;
+    switch ($output) {
+      case 'display':
+-      $jpg = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.jpg';
++      $img = r_dir . DIRECTORY_SEPARATOR . $sha1 . r_img;
+        $pdf  = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.pdf';
+-      $url = r_url . DIRECTORY_SEPARATOR . $sha1 . '.jpg';
++      $url = r_url . DIRECTORY_SEPARATOR . $sha1 . r_img;
+        $urlpdf = r_url . DIRECTORY_SEPARATOR . $sha1 . '.pdf';
+        $htm = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.html';
+-      if (!file_exists($jpg) or onsave) {
++      if (!file_exists($img) or onsave) {
+          $content = '';
+          if ($ws!='') {
+             $content = $content . 'sys.load.image("' . $rws . '",  
+TRUE)' ."\n";
+@@ -155,14 +155,14 @@
+          fwrite ($fd, $content);
+          fclose ($fd);
+          $err = $err . runRinShell (r_cmd . ' < ' . $fn, '');
+-        $err = $err . runShell (convert . ' ' . $pdf . ' ' .  
+$convert . ' ' . $jpg);
++        $err = $err . runShell (convert . ' ' . $pdf . ' ' .  
+$convert . ' ' . $img);
+        }
+-      if (!file_exists($jpg)) {
+-        $jpg = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.jpg.0';
+-        if (file_exists($jpg)) {
++      if (!file_exists($img)) {
++        $img = r_dir . DIRECTORY_SEPARATOR . $sha1 . r_img . '.0';
++        if (file_exists($img)) {
+            for ($i=0; ; $i++) {
+-            $old = r_dir . DIRECTORY_SEPARATOR . $sha1 . '.jpg.' . $i;
+-            $new = r_dir . DIRECTORY_SEPARATOR . $sha1 . '-' . $i .  
+'.jpg';
++            $old = r_dir . DIRECTORY_SEPARATOR . $sha1 . r_img .  
+'.' . $i;
++            $new = r_dir . DIRECTORY_SEPARATOR . $sha1 . '-' . $i .  
+r_img;
+              if (file_exists($old)) {
+                rename ($old, $new);
+              } else {
+@@ -170,14 +170,14 @@
+              }
+            }
+          }
+-        $jpg = r_dir . DIRECTORY_SEPARATOR . $sha1 . '-0.jpg';
+-        file_exists($jpg) or error ('R', 'JPEG file does not exist:  
+' . $jpg, $input . $err);
+-        $url = r_url . DIRECTORY_SEPARATOR . $sha1 . '-0.jpg';
++        $img = r_dir . DIRECTORY_SEPARATOR . $sha1 . '-0' . r_img;
++        file_exists($img) or error ('R', r_img . ' file does not  
+exist: ' . $img, $input . $err);
++        $url = r_url . DIRECTORY_SEPARATOR . $sha1 . '-0' . r_img;
+          $ret = '<a href="' . $urlpdf . '"><img src="' . $url . '"  
+border="0" style="' . style . '"></a>';
+          for ($i=1; ; $i++) {
+-          $jpg = r_dir . DIRECTORY_SEPARATOR . $sha1 . '-'. $i .  
+'.jpg';
+-          $url = r_url . DIRECTORY_SEPARATOR . $sha1 . '-' . $i .  
+'.jpg';
+-          if (file_exists($jpg)) {
++          $img = r_dir . DIRECTORY_SEPARATOR . $sha1 . '-'. $i . r_img;
++          $url = r_url . DIRECTORY_SEPARATOR . $sha1 . '-' . $i .  
+r_img;
++          if (file_exists($img)) {
+              $ret = $ret . '<a href="' . $urlpdf . '"><img src="' .  
+$url . '" border="0" style="' . $style . '"></a>';
+            } else {
+              break;
+
+
+From alex at transitive.com  Wed Sep 27 15:33:24 2006
+From: alex at transitive.com (Alex Brown)
+Date: Wed, 27 Sep 2006 14:33:24 +0100
+Subject: [R-sig-mediawiki] R-News article
+In-Reply-To: <4518D494.9020403@wiwi.hu-berlin.de>
+References: <4518D494.9020403@wiwi.hu-berlin.de>
+Message-ID: <99BE7774-033A-4663-B892-78898C3FA35B@transitive.com>
+
+
+I am using it for data presentation and exploration in an intranet  
+setting, mostly for use by engineers.
+
+It is being used in a number of different ways:
+
+1) Our company intranet includes various database backed systems for  
+tracking bugs, regression testing, automated performance testing.  I  
+wish to extract and present this data in a variety of ways which are  
+not available through the standard company interfaces, which tend to  
+be simplistic, or tailored for general use.  For instance, take our  
+run-times of the benchmarks that make up specCpu2000 over the last 6  
+months, derive the spec score, and plot - to discover anomalies and  
+regressions.
+
+Using the Rform interface additional detail can be shown as required,  
+and the page can update to take account of new data.
+
+The reasonably strong database and system() support in R is useful  
+here, and of course the graphs are of presentation quality.
+
+2) In addition, in exploring and enhancing the performance of our  
+product (an operating system component), we will also temporarily  
+generate large amounts of heterogeneous data - including times, event  
+counts, etc.
+
+The combination of R and wiki enables engineers to construct report- 
+style pages which use in-line or database stored data, extract  
+significant information and present it in an attractive and simple  
+form.  It can be accessed and enhanced from anyone's desk.   
+Previously data was normally stored in csv files in ad-hoc locations,  
+and and calculations would be done in excel, perl or some other tool  
+- typically meaning it is only accessible to it's owner.
+
+
+I hope this is of use to you.
+
+-Alex
+
+
+
+On 26 Sep 2006, at 08:19, Sigbert Klinke wrote:
+
+> Hi,
+>
+> I'am just writing an article for the R News about the extension. The
+> reviewers have requested that I say more detailed for what the  
+> extension
+> can being used. So could you tell me in which context you are using  
+> the
+> extension?
+>
+> Thanks in advance
+>
+>   Sigbert
+>
+> _______________________________________________
+> R-sig-mediawiki at r-project.org mailing list
+> https://stat.ethz.ch/mailman/listinfo/r-sig-mediawiki
+
+

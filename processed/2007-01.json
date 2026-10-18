@@ -1,0 +1,36 @@
+{
+  "list": "r-sig-mediawiki",
+  "description": "",
+  "month": "2007-01",
+  "messages": [
+    {
+      "id": "msg-795cd1b0f990",
+      "message_id": "<aefaf9410701051114m649bf7e4le7ff575ffa9b59b3@mail.gmail.com>",
+      "from_name": "Aleks Montanha",
+      "from_email_hash": "a2e0c80731dde4598b21020e177bdec07f94a313a54165bb194acd996dca0b77",
+      "date": "2007-01-05T19:14:30Z",
+      "subject": "[R-sig-mediawiki] Problem with dbapply",
+      "subject_clean": "Problem with dbapply",
+      "in_reply_to": null,
+      "references": [],
+      "body_plain": "An embedded and charset-unspecified text was scrubbed...\nName: not available\nUrl: https://stat.ethz.ch/pipermail/r-sig-mediawiki/attachments/20070105/c08cc156/attachment.pl",
+      "body_snippet": "An embedded and charset-unspecified text was scrubbed...\nName: not available\nUrl: https://stat.ethz.ch/pipermail/r-sig-mediawiki/attachments/20070105/c08cc156/attachment.pl",
+      "thread_id": "thread-795cd1b0f990",
+      "thread_depth": 0,
+      "month": "2007-01"
+    }
+  ],
+  "threads": [
+    {
+      "id": "thread-795cd1b0f990",
+      "subject": "Problem with dbapply",
+      "message_count": 1,
+      "participants": [
+        "Aleks Montanha"
+      ],
+      "started": "2007-01-05T19:14:30Z",
+      "last_reply": "2007-01-05T19:14:30Z",
+      "root_message_id": "msg-795cd1b0f990"
+    }
+  ]
+}

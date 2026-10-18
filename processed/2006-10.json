@@ -1,0 +1,36 @@
+{
+  "list": "r-sig-mediawiki",
+  "description": "",
+  "month": "2006-10",
+  "messages": [
+    {
+      "id": "msg-60920e36db0d",
+      "message_id": "<453CAC0A.8090203@wiwi.hu-berlin.de>",
+      "from_name": "Sigbert Klinke",
+      "from_email_hash": "6badc41e98998822259f955b11d6355065569f94dfbc13448e2243996f1c8a59",
+      "date": "2006-10-23T11:48:26Z",
+      "subject": "[R-sig-mediawiki] R extension 0.04",
+      "subject_clean": "R extension 0.04",
+      "in_reply_to": null,
+      "references": [],
+      "body_plain": "Hi,\n\nI just put version 0.04 at the web page \nhttp://mars.wiwi.hu-berlin.de/mediawiki/sk/index.php/R_Extension_for_MediaWiki. \nThe changes are:\n\n- Added patch by Alex Brown for improved error messaging\n- Added patch by Alex Brown for choice of image type (jpg, png, etc.)\n- Added new hashfunc to generate filenames for HTML pages, images, etc.\n\nHave fun\n\n  Sigbert Klinke",
+      "body_snippet": "Hi,\n\nI just put version 0.04 at the web page \nhttp://mars.wiwi.hu-berlin.de/mediawiki/sk/index.php/R_Extension_for_MediaWiki. \nThe changes are:\n\n- Added patch by Alex Brown for improved error messagin",
+      "thread_id": "thread-60920e36db0d",
+      "thread_depth": 0,
+      "month": "2006-10"
+    }
+  ],
+  "threads": [
+    {
+      "id": "thread-60920e36db0d",
+      "subject": "R extension 0.04",
+      "message_count": 1,
+      "participants": [
+        "Sigbert Klinke"
+      ],
+      "started": "2006-10-23T11:48:26Z",
+      "last_reply": "2006-10-23T11:48:26Z",
+      "root_message_id": "msg-60920e36db0d"
+    }
+  ]
+}

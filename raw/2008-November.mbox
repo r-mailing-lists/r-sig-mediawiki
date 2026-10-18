@@ -1,0 +1,18 @@
+From lixiaoxu at gmail.com  Thu Nov 27 09:20:12 2008
+From: lixiaoxu at gmail.com (Xiaoxu LI)
+Date: Thu, 27 Nov 2008 16:20:12 +0800
+Subject: [R-sig-mediawiki] Sometimes the R display has "memory" and does not
+	update
+Message-ID: <fb71248a0811270020r41c0e02bgcada7528292c2c2e@mail.gmail.com>
+
+Dear R extension folks,
+
+Several times I visited
+http://mars.wiwi.hu-berlin.de/mediawiki/slides/index.php?title=Comparison_of_noncentral_and_central_distributions
+and click some button to view interactive result, I found the version
+shown in R display was of not obsolete version. My trick was to change
+name of RForm and R display to cut off the R display's memory.
+
+Xiaoxu
+
+

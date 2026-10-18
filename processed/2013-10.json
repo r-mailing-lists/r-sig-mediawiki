@@ -1,0 +1,36 @@
+{
+  "list": "r-sig-mediawiki",
+  "description": "",
+  "month": "2013-10",
+  "messages": [
+    {
+      "id": "msg-d70434d0c514",
+      "message_id": "<27537.83.247.136.48.1382430271.squirrel@webmail.arrakis.com>",
+      "from_name": "Francesc",
+      "from_email_hash": "4edf65598763babcd00bf61fdd48d064c64842bb6d3b8f3727861730e7088949",
+      "date": "2013-10-22T08:24:31Z",
+      "subject": "[R-sig-mediawiki] Problems with v0.12",
+      "subject_clean": "Problems with v0.12",
+      "in_reply_to": null,
+      "references": [],
+      "body_plain": "http://www.mediawiki.org/wiki/Extension_talk:R#problems_with_v0.12_33693",
+      "body_snippet": "http://www.mediawiki.org/wiki/Extension_talk:R#problems_with_v0.12_33693",
+      "thread_id": "thread-d70434d0c514",
+      "thread_depth": 0,
+      "month": "2013-10"
+    }
+  ],
+  "threads": [
+    {
+      "id": "thread-d70434d0c514",
+      "subject": "Problems with v0.12",
+      "message_count": 1,
+      "participants": [
+        "Francesc"
+      ],
+      "started": "2013-10-22T08:24:31Z",
+      "last_reply": "2013-10-22T08:24:31Z",
+      "root_message_id": "msg-d70434d0c514"
+    }
+  ]
+}

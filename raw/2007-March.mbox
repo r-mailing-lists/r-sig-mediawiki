@@ -1,0 +1,21 @@
+From sigbert at wiwi.hu-berlin.de  Sat Mar  3 17:04:34 2007
+From: sigbert at wiwi.hu-berlin.de (Sigbert Klinke)
+Date: Sat, 03 Mar 2007 17:04:34 +0100
+Subject: [R-sig-mediawiki] R extension 0.05
+Message-ID: <45E99C92.2050208@wiwi.hu-berlin.de>
+
+Hi,
+
+I just put version 0.05 at the web page 
+http://mars.wiwi.hu-berlin.de/mediawiki/sk/index.php/R_Extension_for_MediaWiki. 
+The changes are:
+
+- Added patch by Michael Cassin for PHP5
+- More banned commands suggested by Michael Cassin
+- Upload and reading of Excel CSV and plain ASCII files
+
+Have fun
+
+  Sigbert Klinke
+
+

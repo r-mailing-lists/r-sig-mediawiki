@@ -1,0 +1,104 @@
+From Andrew.Strelzoff at erdc.dren.mil  Mon Feb  9 20:48:16 2015
+From: Andrew.Strelzoff at erdc.dren.mil (Strelzoff, Andrew ERDC-RDE-ITL-MS)
+Date: Mon, 9 Feb 2015 19:48:16 +0000
+Subject: [R-sig-mediawiki] vagrant mediawiki with r extension question
+Message-ID: <D0FE6C19.362B%andrew.strelzoff@erdc.dren.mil>
+
+Hi,
+
+ We?re attempting to build a mediawiki-based data science application and one key is the R extension.
+
+We are toying with the Vagrant-install of Mediawiki -
+outline here - http://www.mediawiki.org/wiki/MediaWiki-Vagrant
+
+Vagrant is essential a scripting platform to set up and run virtual machines.  This is useful because then we can write our application set-up as a vagrant script.
+
+The R Extension works up to a point ? you need to install R, imagemagick and ghostscript on the VM.
+
+But the paths to generate images are wrong.
+
+They look like /w/Rfiles/?
+Rather than what they should be ? presumably -  $ScriptPath/Rfiles/?
+
+Please advise
+
+Thanks
+
+Andrew Strelzoff
+US Army Corps of Engineers
+
+	[[alternative HTML version deleted]]
+
+
+From sigbert at wiwi.hu-berlin.de  Tue Feb 10 10:45:09 2015
+From: sigbert at wiwi.hu-berlin.de (Sigbert Klinke)
+Date: Tue, 10 Feb 2015 10:45:09 +0100
+Subject: [R-sig-mediawiki] vagrant mediawiki with r extension question
+In-Reply-To: <D0FE6C19.362B%andrew.strelzoff@erdc.dren.mil>
+References: <D0FE6C19.362B%andrew.strelzoff@erdc.dren.mil>
+Message-ID: <54D9D325.8080407@wiwi.hu-berlin.de>
+
+Hi,
+
+which version of the extension and which version of Mediawiki you are
+using. What does the page Special:R say about the directories?
+
+The images are stored in a subdirectory of the Rfiles directory. The
+http path is determined in Engine::url which uses $extr->R_URL. This is
+set to
+
+$this->R_URL     = $wgServer . $wgScriptPath . DIRECTORY_SEPARATOR .
+'Rfiles' . DIRECTORY_SEPARATOR;
+
+in ExtR::__construct.
+
+Just one guess: Did you run the R extension and then later changed
+something with directories? The extension stores its pathes etc. in the
+file Rfiles/ExtR.dat if it does not exist. Subsequent calls do not
+recompute the pathes etc. but read everything from Rfiles/ExtR.dat.
+Maybe you just need to delete this file and run a R program such that
+the file is regenerated.
+
+Best Sigbert
+
+On 09.02.2015 20:48, Strelzoff, Andrew ERDC-RDE-ITL-MS wrote:
+> Hi,
+> 
+>  We?re attempting to build a mediawiki-based data science application and one key is the R extension.
+> 
+> We are toying with the Vagrant-install of Mediawiki -
+> outline here - http://www.mediawiki.org/wiki/MediaWiki-Vagrant
+> 
+> Vagrant is essential a scripting platform to set up and run virtual machines.  This is useful because then we can write our application set-up as a vagrant script.
+> 
+> The R Extension works up to a point ? you need to install R, imagemagick and ghostscript on the VM.
+> 
+> But the paths to generate images are wrong.
+> 
+> They look like /w/Rfiles/?
+> Rather than what they should be ? presumably -  $ScriptPath/Rfiles/?
+> 
+> Please advise
+> 
+> Thanks
+> 
+> Andrew Strelzoff
+> US Army Corps of Engineers
+> 
+> 	[[alternative HTML version deleted]]
+> 
+> 
+> 
+> _______________________________________________
+> R-sig-mediawiki at r-project.org mailing list
+> https://stat.ethz.ch/mailman/listinfo/r-sig-mediawiki
+> 
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0xBFC9BB3F.asc
+Type: application/pgp-keys
+Size: 2226 bytes
+Desc: not available
+URL: <https://stat.ethz.ch/pipermail/r-sig-mediawiki/attachments/20150210/a59159ac/attachment.bin>
+

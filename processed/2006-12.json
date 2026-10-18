@@ -1,0 +1,167 @@
+{
+  "list": "r-sig-mediawiki",
+  "description": "",
+  "month": "2006-12",
+  "messages": [
+    {
+      "id": "msg-754a994a5348",
+      "message_id": "<b02e8b330612040917h755cc26er10ace37ba4e7d24a@mail.gmail.com>",
+      "from_name": "Michael Cassin",
+      "from_email_hash": "07f51706cf8d02d40cbc56949269de54505007e0dab877e50e6644fe7e73ec85",
+      "date": "2006-12-04T17:17:28Z",
+      "subject": "[R-sig-mediawiki] Installation Trouble - getCmd() issue?",
+      "subject_clean": "Installation Trouble - getCmd() issue?",
+      "in_reply_to": null,
+      "references": [],
+      "body_plain": "Hi,\n\nThis is a very interesting project and I'm very excited to contribute.\n I'm having some trouble getting up and running though.\n\nIf I put the following line in LocalSettings.php\n\nrequire_once( \"extensions/Rext.php\" );\n\nthen the wiki does not load, it just shows a blank page.\n\nI've done some debugging and it seems to have a problem with this code\nin Rext.php. Below  I have commented out the commands that cause it to\ncrash.   It seems to not like getCmd() or extractUrl().   With all of\nthese lines commented out, the wiki loads, but of course the extension\ndoes not work.\n\n=================\n##defined('convert')   || define('convert',   getCmd('', 'convert', ''));\n##defined('sudo')      || define('sudo',      getCmd('', 'sudo', ' -u\n' . sudouser . ' '));\n##defined('chmod')     || define('chmod',     getCmd('', 'chmod', ' 664 '));\n##defined('r_cmd')     || define('r_cmd',     getCmd('', 'R', '\n--vanilla --quiet'));\n\ndefined('r_dir')     || define('r_dir',     getcwd() .\nDIRECTORY_SEPARATOR . 'Rfiles' );\n##defined('r_url')     || define('r_url',     extractUrl(r_dir));\ndefined('r_cgi')     || define('r_cgi',     getcwd() .\nDIRECTORY_SEPARATOR . 'R.php');\ndefined('r_ext')     || define('r_ext',     getcwd() .\nDIRECTORY_SEPARATOR . 'extensions' . DIRECTORY_SEPARATOR . 'R');\ndefined('r_img')     || define('r_img',     '.jpg');\n====================\n\nI don't know much about PHP/linux and haven't been able to find\ninformation on getCmd() that will help me resolve the problem.  Can\nanyone offer any advice?\n\nI'm running:\nFedora Core 4\nkernel-2.6.17-1.2142_FC4\nMediaWiki 1.8.2\nmysql-4.1.20-1.FC4.1\nphp-5.0.4-10.5\nphp-mysql-5.0.4-10.5\nImageMagick-6.2.2.0-3.fc4.2\nR 2.4\n\nKind regards,\nMike Cassin",
+      "body_snippet": "Hi,\n\nThis is a very interesting project and I'm very excited to contribute.\n I'm having some trouble getting up and running though.\n\nIf I put the following line in LocalSettings.php\n\nrequire_once( \"ex",
+      "thread_id": "thread-754a994a5348",
+      "thread_depth": 0,
+      "month": "2006-12"
+    },
+    {
+      "id": "msg-6507bdd76057",
+      "message_id": "<45756CCF.4010407@wiwi.hu-berlin.de>",
+      "from_name": "Sigbert Klinke",
+      "from_email_hash": "6badc41e98998822259f955b11d6355065569f94dfbc13448e2243996f1c8a59",
+      "date": "2006-12-05T12:57:51Z",
+      "subject": "[R-sig-mediawiki] Installation Trouble - getCmd() issue?",
+      "subject_clean": "Installation Trouble - getCmd() issue?",
+      "in_reply_to": "<003701c71857$19d04750$0300a8c0@Laptop>",
+      "references": [
+        "<003701c71857$19d04750$0300a8c0@Laptop>"
+      ],
+      "body_plain": "Hi,\n> I did some experiments which have convinced me that either the Rext.php\n> include statement is not finding the extbase.php in the same directory, or\n> that the webserver doesn't have the permission to use it.  I also suspect I\n> may have a similar issue to the www.XYZdomain.de example you give in the\n> documentation, but I don't understand what my issue could be.\n>   \n > My directory structure is like\n >\n > /var/www/html/wiki which maps to dev.cassin.name/wiki\n\nIf you look at extbase.php, you will find:\n\nfunction extractUrl ($input) {\n# Suse Linux:  /srv/www/htdocs\n#   TeachWiki: /srv/www/htdocs/mediawiki/teachwiki\n#   StatWiki:  /srv/www/htdocs/mediawiki/statwiki\n# Debian:      /var/www\n  $exparr = array('www', 'htdocs', 'statwiki', 'teachwiki');\n\nIn $exparr is stored when to assume that the wiki directory starts. In \nyour case you should add a 'html' such that\n\n  $exparr = array('www', 'htdocs', 'statwiki', 'teachwiki', 'html');\n> However, when I changed the include to the relative path\n> wiki\\extensions\\extbase.php, it does not work. \n>   \nMaybe this solves also your extbase.php problem, but I'am not sure. In \nworst case include the absolute path into Rext.php (maybe with a \ninclude_once).\n> By the way, how many people do you have involved in this project?  I think\n> it's very interesting. \n>   \nAt my place nobody, but some users have contributed some code to the \nproject. I will continue, if I change to a new mediawiki version. But up \nto now nobody reported errors with the mediawikis after 1.6.8 which I'am \nusing.\n\nYours sincerely\n\n  Sigbert Klinke",
+      "body_snippet": "Hi,\n> I did some experiments which have convinced me that either the Rext.php\n> include statement is not finding the extbase.php in the same directory, or\n> that the webserver doesn't have the permiss",
+      "thread_id": "thread-6507bdd76057",
+      "thread_depth": 0,
+      "month": "2006-12"
+    },
+    {
+      "id": "msg-ce9b21b01109",
+      "message_id": "<4577C601.1070306@wiwi.hu-berlin.de>",
+      "from_name": "Sigbert Klinke",
+      "from_email_hash": "6badc41e98998822259f955b11d6355065569f94dfbc13448e2243996f1c8a59",
+      "date": "2006-12-07T07:42:57Z",
+      "subject": "[R-sig-mediawiki] Installation Trouble - getCmd() issue?",
+      "subject_clean": "Installation Trouble - getCmd() issue?",
+      "in_reply_to": "<b02e8b330612061019q4b4f19f3kc59795066a89557f@mail.gmail.com>",
+      "references": [
+        "<003701c71857$19d04750$0300a8c0@Laptop>",
+        "<45756CCF.4010407@wiwi.hu-berlin.de>",
+        "<b02e8b330612050618q5fa6a611t67fe189b98bedfa8@mail.gmail.com>",
+        "<b02e8b330612061019q4b4f19f3kc59795066a89557f@mail.gmail.com>"
+      ],
+      "body_plain": "Hi,\n> I don't want to take up your time with all these mails, but hope my \n> experience might be useful for other users.\nDon't worry, I'am very interested to know why it does not work on your \ncomputer.\n> [root at dev extensions]# diff Rext.php Rext.php.original.fails   *** \n> diff reports no differences\n> [root at dev extensions]#   \n>\n> Perhaps I just don't know enough about linux, but the above seems very \n> odd to me.\nThis is really odd.\n> Anyway, I can now get it up and running - as long as I use Security \n> level 2.\nI do not understand this, the highest level works, but the lower and \nsimpler do not work...\n> Error in file(file, \"r\", encoding = encoding) :\n> unable to open connection\n> In addition: Warning message:\n> cannot open file '/var/www/html/wiki/extensions/R/StatWiki.r', reason \n> 'Permission denied'\n> Execution halted\nDid you try to make a copy from StatWiki.r as well?\n> I can skip over this by commenting out the R code that tries to run \n> StatWiki.r.  Your binomial pdf example will still work. However, I'd \n> prefer to have a proper install. If you have any alternative \n> reccomendations, that would be great.\nIt just contains the addtional R functions; but if the binomial pdf with \nthe tabel works than outHTML must work. And this function is defined in \nStatWiki.r. Really strange.\n\nDuring the weekend I will try to set up a system like yours and try it \nmyself.\n\nBest regards\n\n  Sigbert",
+      "body_snippet": "Hi,\n> I don't want to take up your time with all these mails, but hope my \n> experience might be useful for other users.\nDon't worry, I'am very interested to know why it does not work on your \ncompute",
+      "thread_id": "thread-ce9b21b01109",
+      "thread_depth": 0,
+      "month": "2006-12"
+    },
+    {
+      "id": "msg-b29c7e1e00ef",
+      "message_id": "<45780916.7050905@wiwi.hu-berlin.de>",
+      "from_name": "Sigbert Klinke",
+      "from_email_hash": "6badc41e98998822259f955b11d6355065569f94dfbc13448e2243996f1c8a59",
+      "date": "2006-12-07T12:29:10Z",
+      "subject": "[R-sig-mediawiki] Installation Trouble - getCmd() issue?",
+      "subject_clean": "Installation Trouble - getCmd() issue?",
+      "in_reply_to": "<b02e8b330612070255s38f3b168o609e4c69463b967a@mail.gmail.com>",
+      "references": [
+        "<003701c71857$19d04750$0300a8c0@Laptop>",
+        "<45756CCF.4010407@wiwi.hu-berlin.de>",
+        "<b02e8b330612050618q5fa6a611t67fe189b98bedfa8@mail.gmail.com>",
+        "<b02e8b330612061019q4b4f19f3kc59795066a89557f@mail.gmail.com>",
+        "<4577C601.1070306@wiwi.hu-berlin.de>",
+        "<b02e8b330612070255s38f3b168o609e4c69463b967a@mail.gmail.com>"
+      ],
+      "body_plain": "Hi,\n> If I could just find out how to \"su apache\" I think I could debug further.\nDid you check in /etc/passwd if the apache user has a shell? In my \n/etc/passwd is written for wwwrun (which is my  apache user)\n\nwwwrun:x:30:8:WWW daemon apache:/var/lib/wwwrun:/bin/false\n\nand the \"/bin/false\" forbids that somebody logs in as wwwrun.\n\nBest regrads\n\n  Sigbert Klinke",
+      "body_snippet": "Hi,\n> If I could just find out how to \"su apache\" I think I could debug further.\nDid you check in /etc/passwd if the apache user has a shell? In my \n/etc/passwd is written for wwwrun (which is my  apa",
+      "thread_id": "thread-b29c7e1e00ef",
+      "thread_depth": 0,
+      "month": "2006-12"
+    },
+    {
+      "id": "msg-afdc98459eba",
+      "message_id": "<4579B227.1060303@wiwi.hu-berlin.de>",
+      "from_name": "Sigbert Klinke",
+      "from_email_hash": "6badc41e98998822259f955b11d6355065569f94dfbc13448e2243996f1c8a59",
+      "date": "2006-12-08T18:42:47Z",
+      "subject": "[R-sig-mediawiki] Installation Trouble - getCmd() issue?",
+      "subject_clean": "Installation Trouble - getCmd() issue?",
+      "in_reply_to": "<b02e8b330612070524r13b9e681t1d926caba2c5fdab@mail.gmail.com>",
+      "references": [
+        "<003701c71857$19d04750$0300a8c0@Laptop>",
+        "<45756CCF.4010407@wiwi.hu-berlin.de>",
+        "<b02e8b330612050618q5fa6a611t67fe189b98bedfa8@mail.gmail.com>",
+        "<b02e8b330612061019q4b4f19f3kc59795066a89557f@mail.gmail.com>",
+        "<4577C601.1070306@wiwi.hu-berlin.de>",
+        "<b02e8b330612070255s38f3b168o609e4c69463b967a@mail.gmail.com>",
+        "<45780916.7050905@wiwi.hu-berlin.de>",
+        "<b02e8b330612070524r13b9e681t1d926caba2c5fdab@mail.gmail.com>"
+      ],
+      "body_plain": "Hi,\n\nI just set up myself a mediawiki 1.8.2 installation with the R extension \nv0.04 on new installed Fedora Core 4 server. Everything worked fine, the \nexample program run. The only thing I had to do was to add the 'html' \nentry in the $exparr array in extbase.php. So I guess from here on I can \nnot help you further; you must have tweaked your system  such that it is \nnot a clean Fedora system..\n\nSorry  Sigbert",
+      "body_snippet": "Hi,\n\nI just set up myself a mediawiki 1.8.2 installation with the R extension \nv0.04 on new installed Fedora Core 4 server. Everything worked fine, the \nexample program run. The only thing I had to do",
+      "thread_id": "thread-afdc98459eba",
+      "thread_depth": 0,
+      "month": "2006-12"
+    }
+  ],
+  "threads": [
+    {
+      "id": "thread-754a994a5348",
+      "subject": "Installation Trouble - getCmd() issue?",
+      "message_count": 1,
+      "participants": [
+        "Michael Cassin"
+      ],
+      "started": "2006-12-04T17:17:28Z",
+      "last_reply": "2006-12-04T17:17:28Z",
+      "root_message_id": "msg-754a994a5348"
+    },
+    {
+      "id": "thread-6507bdd76057",
+      "subject": "Installation Trouble - getCmd() issue?",
+      "message_count": 1,
+      "participants": [
+        "Sigbert Klinke"
+      ],
+      "started": "2006-12-05T12:57:51Z",
+      "last_reply": "2006-12-05T12:57:51Z",
+      "root_message_id": "msg-6507bdd76057"
+    },
+    {
+      "id": "thread-ce9b21b01109",
+      "subject": "Installation Trouble - getCmd() issue?",
+      "message_count": 1,
+      "participants": [
+        "Sigbert Klinke"
+      ],
+      "started": "2006-12-07T07:42:57Z",
+      "last_reply": "2006-12-07T07:42:57Z",
+      "root_message_id": "msg-ce9b21b01109"
+    },
+    {
+      "id": "thread-b29c7e1e00ef",
+      "subject": "Installation Trouble - getCmd() issue?",
+      "message_count": 1,
+      "participants": [
+        "Sigbert Klinke"
+      ],
+      "started": "2006-12-07T12:29:10Z",
+      "last_reply": "2006-12-07T12:29:10Z",
+      "root_message_id": "msg-b29c7e1e00ef"
+    },
+    {
+      "id": "thread-afdc98459eba",
+      "subject": "Installation Trouble - getCmd() issue?",
+      "message_count": 1,
+      "participants": [
+        "Sigbert Klinke"
+      ],
+      "started": "2006-12-08T18:42:47Z",
+      "last_reply": "2006-12-08T18:42:47Z",
+      "root_message_id": "msg-afdc98459eba"
+    }
+  ]
+}

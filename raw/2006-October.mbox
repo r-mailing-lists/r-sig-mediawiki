@@ -1,0 +1,21 @@
+From sigbert at wiwi.hu-berlin.de  Mon Oct 23 13:48:26 2006
+From: sigbert at wiwi.hu-berlin.de (Sigbert Klinke)
+Date: Mon, 23 Oct 2006 13:48:26 +0200
+Subject: [R-sig-mediawiki] R extension 0.04
+Message-ID: <453CAC0A.8090203@wiwi.hu-berlin.de>
+
+Hi,
+
+I just put version 0.04 at the web page 
+http://mars.wiwi.hu-berlin.de/mediawiki/sk/index.php/R_Extension_for_MediaWiki. 
+The changes are:
+
+- Added patch by Alex Brown for improved error messaging
+- Added patch by Alex Brown for choice of image type (jpg, png, etc.)
+- Added new hashfunc to generate filenames for HTML pages, images, etc.
+
+Have fun
+
+  Sigbert Klinke
+
+

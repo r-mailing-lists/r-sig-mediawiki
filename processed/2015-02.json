@@ -1,0 +1,55 @@
+{
+  "list": "r-sig-mediawiki",
+  "description": "",
+  "month": "2015-02",
+  "messages": [
+    {
+      "id": "msg-504e3db0fdc6",
+      "message_id": "<D0FE6C19.362B%andrew.strelzoff@erdc.dren.mil>",
+      "from_name": "Strelzoff, Andrew ERDC-RDE-ITL-MS",
+      "from_email_hash": "c401d21da74c1ace6b023d2e4941a3407b1c5db2c2366cb528776f707d4674cc",
+      "date": "2015-02-09T19:48:16Z",
+      "subject": "[R-sig-mediawiki] vagrant mediawiki with r extension question",
+      "subject_clean": "vagrant mediawiki with r extension question",
+      "in_reply_to": null,
+      "references": [],
+      "body_plain": "Hi,\n\n We?re attempting to build a mediawiki-based data science application and one key is the R extension.\n\nWe are toying with the Vagrant-install of Mediawiki -\noutline here - http://www.mediawiki.org/wiki/MediaWiki-Vagrant\n\nVagrant is essential a scripting platform to set up and run virtual machines.  This is useful because then we can write our application set-up as a vagrant script.\n\nThe R Extension works up to a point ? you need to install R, imagemagick and ghostscript on the VM.\n\nBut the paths to generate images are wrong.\n\nThey look like /w/Rfiles/?\nRather than what they should be ? presumably -  $ScriptPath/Rfiles/?\n\nPlease advise\n\nThanks\n\nAndrew Strelzoff\nUS Army Corps of Engineers\n\n\t[[alternative HTML version deleted]]",
+      "body_snippet": "Hi,\n\n We?re attempting to build a mediawiki-based data science application and one key is the R extension.\n\nWe are toying with the Vagrant-install of Mediawiki -\noutline here - http://www.mediawiki.or",
+      "thread_id": "thread-504e3db0fdc6",
+      "thread_depth": 0,
+      "month": "2015-02"
+    },
+    {
+      "id": "msg-3c074b6ed8cf",
+      "message_id": "<54D9D325.8080407@wiwi.hu-berlin.de>",
+      "from_name": "Sigbert Klinke",
+      "from_email_hash": "6badc41e98998822259f955b11d6355065569f94dfbc13448e2243996f1c8a59",
+      "date": "2015-02-10T09:45:09Z",
+      "subject": "[R-sig-mediawiki] vagrant mediawiki with r extension question",
+      "subject_clean": "vagrant mediawiki with r extension question",
+      "in_reply_to": "<D0FE6C19.362B%andrew.strelzoff@erdc.dren.mil>",
+      "references": [
+        "<D0FE6C19.362B%andrew.strelzoff@erdc.dren.mil>"
+      ],
+      "body_plain": "Hi,\n\nwhich version of the extension and which version of Mediawiki you are\nusing. What does the page Special:R say about the directories?\n\nThe images are stored in a subdirectory of the Rfiles directory. The\nhttp path is determined in Engine::url which uses $extr->R_URL. This is\nset to\n\n$this->R_URL     = $wgServer . $wgScriptPath . DIRECTORY_SEPARATOR .\n'Rfiles' . DIRECTORY_SEPARATOR;\n\nin ExtR::__construct.\n\nJust one guess: Did you run the R extension and then later changed\nsomething with directories? The extension stores its pathes etc. in the\nfile Rfiles/ExtR.dat if it does not exist. Subsequent calls do not\nrecompute the pathes etc. but read everything from Rfiles/ExtR.dat.\nMaybe you just need to delete this file and run a R program such that\nthe file is regenerated.\n\nBest Sigbert\n\nOn 09.02.2015 20:48, Strelzoff, Andrew ERDC-RDE-ITL-MS wrote:\n> Hi,\n> \n>  We?re attempting to build a mediawiki-based data science application and one key is the R extension.\n> \n> We are toying with the Vagrant-install of Mediawiki -\n> outline here - http://www.mediawiki.org/wiki/MediaWiki-Vagrant\n> \n> Vagrant is essential a scripting platform to set up and run virtual machines.  This is useful because then we can write our application set-up as a vagrant script.\n> \n> The R Extension works up to a point ? you need to install R, imagemagick and ghostscript on the VM.\n> \n> But the paths to generate images are wrong.\n> \n> They look like /w/Rfiles/?\n> Rather than what they should be ? presumably -  $ScriptPath/Rfiles/?\n> \n> Please advise\n> \n> Thanks\n> \n> Andrew Strelzoff\n> US Army Corps of Engineers\n> \n> \t[[alternative HTML version deleted]]\n> \n> \n> \n> _______________________________________________\n> R-sig-mediawiki at r-project.org mailing list\n> https://stat.ethz.ch/mailman/listinfo/r-sig-mediawiki\n> \n\n-------------- next part --------------\nA non-text attachment was scrubbed...\nName: 0xBFC9BB3F.asc\nType: application/pgp-keys\nSize: 2226 bytes\nDesc: not available\nURL: <https://stat.ethz.ch/pipermail/r-sig-mediawiki/attachments/20150210/a59159ac/attachment.bin>",
+      "body_snippet": "Hi,\n\nwhich version of the extension and which version of Mediawiki you are\nusing. What does the page Special:R say about the directories?\n\nThe images are stored in a subdirectory of the Rfiles directo",
+      "thread_id": "thread-504e3db0fdc6",
+      "thread_depth": 1,
+      "month": "2015-02"
+    }
+  ],
+  "threads": [
+    {
+      "id": "thread-504e3db0fdc6",
+      "subject": "vagrant mediawiki with r extension question",
+      "message_count": 2,
+      "participants": [
+        "Sigbert Klinke",
+        "Strelzoff, Andrew ERDC-RDE-ITL-MS"
+      ],
+      "started": "2015-02-09T19:48:16Z",
+      "last_reply": "2015-02-10T09:45:09Z",
+      "root_message_id": "msg-504e3db0fdc6"
+    }
+  ]
+}

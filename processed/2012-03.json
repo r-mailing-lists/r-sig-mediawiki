@@ -1,0 +1,36 @@
+{
+  "list": "r-sig-mediawiki",
+  "description": "",
+  "month": "2012-03",
+  "messages": [
+    {
+      "id": "msg-bc06104e15c6",
+      "message_id": "<776091592.2099907.1331213689116.JavaMail.app@ela4-app0132.prod>",
+      "from_name": "Aleksandro Montanha",
+      "from_email_hash": "a2e0c80731dde4598b21020e177bdec07f94a313a54165bb194acd996dca0b77",
+      "date": "2012-03-08T13:34:49Z",
+      "subject": "[R-sig-mediawiki] Faça parte da minha rede no LinkedIn",
+      "subject_clean": "Faça parte da minha rede no LinkedIn",
+      "in_reply_to": null,
+      "references": [],
+      "body_plain": "An embedded and charset-unspecified text was scrubbed...\nName: not available\nURL: <https://stat.ethz.ch/pipermail/r-sig-mediawiki/attachments/20120308/60d9a0fb/attachment.pl>",
+      "body_snippet": "An embedded and charset-unspecified text was scrubbed...\nName: not available\nURL: <https://stat.ethz.ch/pipermail/r-sig-mediawiki/attachments/20120308/60d9a0fb/attachment.pl>",
+      "thread_id": "thread-bc06104e15c6",
+      "thread_depth": 0,
+      "month": "2012-03"
+    }
+  ],
+  "threads": [
+    {
+      "id": "thread-bc06104e15c6",
+      "subject": "Faça parte da minha rede no LinkedIn",
+      "message_count": 1,
+      "participants": [
+        "Aleksandro Montanha"
+      ],
+      "started": "2012-03-08T13:34:49Z",
+      "last_reply": "2012-03-08T13:34:49Z",
+      "root_message_id": "msg-bc06104e15c6"
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+From sigbert at wiwi.hu-berlin.de  Mon Aug 28 08:52:30 2006
+From: sigbert at wiwi.hu-berlin.de (Sigbert Klinke)
+Date: Mon, 28 Aug 2006 08:52:30 +0200
+Subject: [R-sig-mediawiki] R extension 0.03
+Message-ID: <44F292AE.9030107@wiwi.hu-berlin.de>
+
+Hi,
+
+some days ago I put the R for Mediawiki extension 0.03 for download at 
+http://mars.wiwi.hu-berlin.de/mediawiki/sk/index.php/R_Extension_for_MediaWiki.
+
+Changes are:
+- A new security level, thus we have currently three
+ 0:  R programs run with the same permission as the web server
+ 1 (default): A set of commands in R programs are forbidden (based on 
+the list of the R-PHP people)
+ 2 (new): R programs run as a separate user which would allow that this 
+user can not read, e.g. LocalSettings.php which contains for example the 
+password for the MySQL Database
+- outHTML function interface has be simplified
+
+If you are satisfied with 0.02 then there might be no need to change to 
+0.03.
+
+I'am also looking for further small steps that can be done, like
+- choosing the output format for the graphics freely (currently pdf is 
+produced to have a vector scalable  outputformat and I generate jpg for 
+the web page)
+- improved error messaging
+- Sweave like output
+What would you be most interested or any other suggestions what to do next ?
+
+Have fun
+
+  Sigbert Klinke
+
+

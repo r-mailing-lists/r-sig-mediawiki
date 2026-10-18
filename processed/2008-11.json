@@ -1,0 +1,36 @@
+{
+  "list": "r-sig-mediawiki",
+  "description": "",
+  "month": "2008-11",
+  "messages": [
+    {
+      "id": "msg-e3c38403499d",
+      "message_id": "<fb71248a0811270020r41c0e02bgcada7528292c2c2e@mail.gmail.com>",
+      "from_name": "Xiaoxu LI",
+      "from_email_hash": "02400f771a25f3874cd60a4a09a30a9e05c807a3a92608e351cbc21fd4257e69",
+      "date": "2008-11-27T08:20:12Z",
+      "subject": "[R-sig-mediawiki] Sometimes the R display has \"memory\" and does not update",
+      "subject_clean": "Sometimes the R display has \"memory\" and does not update",
+      "in_reply_to": null,
+      "references": [],
+      "body_plain": "Dear R extension folks,\n\nSeveral times I visited\nhttp://mars.wiwi.hu-berlin.de/mediawiki/slides/index.php?title=Comparison_of_noncentral_and_central_distributions\nand click some button to view interactive result, I found the version\nshown in R display was of not obsolete version. My trick was to change\nname of RForm and R display to cut off the R display's memory.\n\nXiaoxu",
+      "body_snippet": "Dear R extension folks,\n\nSeveral times I visited\nhttp://mars.wiwi.hu-berlin.de/mediawiki/slides/index.php?title=Comparison_of_noncentral_and_central_distributions\nand click some button to view interac",
+      "thread_id": "thread-e3c38403499d",
+      "thread_depth": 0,
+      "month": "2008-11"
+    }
+  ],
+  "threads": [
+    {
+      "id": "thread-e3c38403499d",
+      "subject": "Sometimes the R display has \"memory\" and does not update",
+      "message_count": 1,
+      "participants": [
+        "Xiaoxu LI"
+      ],
+      "started": "2008-11-27T08:20:12Z",
+      "last_reply": "2008-11-27T08:20:12Z",
+      "root_message_id": "msg-e3c38403499d"
+    }
+  ]
+}

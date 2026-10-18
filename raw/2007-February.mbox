@@ -1,0 +1,153 @@
+From stoecker at cs.uni-potsdam.de  Fri Feb  2 16:29:47 2007
+From: stoecker at cs.uni-potsdam.de (=?ISO-8859-15?Q?Marco_St=F6cker?=)
+Date: Fri, 02 Feb 2007 16:29:47 +0100
+Subject: [R-sig-mediawiki] Installation Trouble - getCmd() issue?
+Message-ID: <45C358EB.1050102@cs.uni-potsdam.de>
+
+Hello,
+
+I actually work on a project to combine R with mediawiki  to generate 
+statistical analysis directly from the wiki database. I just installed 
+the wiki and the R extensions under windows XP but I received the error 
+message as I read in the archive messages from December 2006. I guess 
+that the extensions are supported by an apache server under windows, 
+aren't they? Does anybody know which changes I have to made?
+
+Marco
+
+
+From sigbert at wiwi.hu-berlin.de  Wed Feb  7 15:32:55 2007
+From: sigbert at wiwi.hu-berlin.de (Sigbert Klinke)
+Date: Wed, 07 Feb 2007 15:32:55 +0100
+Subject: [R-sig-mediawiki] Installation Trouble - getCmd() issue?
+In-Reply-To: <45C7B23F.90409@cs.uni-potsdam.de>
+References: <45C358EB.1050102@cs.uni-potsdam.de>
+	<45C6ED40.9000005@wiwi.hu-berlin.de>
+	<45C7B23F.90409@cs.uni-potsdam.de>
+Message-ID: <45C9E317.3050009@wiwi.hu-berlin.de>
+
+Hi,
+> Hello Mr Klinke
+>
+> Thanks for your fast answer. I'm using XAMPPlite version 1.5.3a (a 
+> seen below) and MediaWiki version 1.8.2 in a windows xp professional 
+> environment.
+>
+>  ApacheFriends XAMPP Lite version 1.5.3a
+>
+>  + Apache 2.2.2
+>  + MySQL 5.0.21
+>  + PHP 5.1.4 + PEAR (basic package)
+>  + eAccelerator 0.9.5 beta2 (PHP5 experimentally)
+>  + XAMPP Control Version 2.3 from www.nat32.com    + XAMPP Security 
+> 1.0    + SQLite 2.8.15
+>  + OpenSSL 0.9.8b
+>  + phpMyAdmin 2.8.1
+>  + Webalizer 2.01-10
+>  + Zend Optimizer 3.0.0
+>
+> I hope this will help. Many thanks.
+When I install XAMPP Lite version 1.5.3a + Mediawiki 1.5.3. and the R 
+extension v0.04 I get a page with the entry
+
+ERROR: <convert...> command not found in
+
+If it is that what you get then obviously the R extension did not find 
+the convert command from the ImageMagick package. If you have installed 
+ImageMagick somewhere in your system then simply change in the routine 
+getCmd in extbase.php the line
+
+$path = array('C:\path-to-the-convert-cmd\');
+
+For the other necessary commands you have to add the other pathes in 
+extbase.php too.
+It might be a severe problem that the extension is written for Unix (I 
+gave up to get it working under Windows).
+
+Best regards
+
+Sigbert Klinke
+
+
+From mattias.rantalainen at imperial.ac.uk  Thu Feb 22 12:48:15 2007
+From: mattias.rantalainen at imperial.ac.uk (Mattias Rantalainen)
+Date: Thu, 22 Feb 2007 11:48:15 +0000
+Subject: [R-sig-mediawiki] How to use form input?
+Message-ID: <C203337F.2FA9%mattias.rantalainen@imperial.ac.uk>
+
+Hello,
+
+I've manage to install the R-mediawiki extension and I've got the setup to
+work for text and image output on the wiki. However, I haven't been able to
+figure out the syntax for using a form to enter parameters to R.
+
+For instance as seen at:
+http://statwiki.wiwi.hu-berlin.de/index.php/Binomialverteilung
+
+I would appreciate if someone could post a short code example showing how
+this could be done for a simple case. I realize that this question may be
+due to my limited knowledge of PHP, but any help in the matter would be much
+appreciated.
+
+Best,
+/Mattias
+
+
+From sigbert at wiwi.hu-berlin.de  Sat Feb 24 10:51:34 2007
+From: sigbert at wiwi.hu-berlin.de (Sigbert Klinke)
+Date: Sat, 24 Feb 2007 10:51:34 +0100
+Subject: [R-sig-mediawiki] How to use form input?
+In-Reply-To: <C203337F.2FA9%mattias.rantalainen@imperial.ac.uk>
+References: <C203337F.2FA9%mattias.rantalainen@imperial.ac.uk>
+Message-ID: <45E00AA6.9020508@wiwi.hu-berlin.de>
+
+Hi,
+> I would appreciate if someone could post a short code example showing how
+> this could be done for a simple case. I realize that this question may be
+> due to my limited knowledge of PHP, but any help in the matter would be much
+> appreciated.
+>   
+Please have a look to 
+http://mars.wiwi.hu-berlin.de/mediawiki/slides/index.php/Integration_of_R_into_wikis_-_Interaction 
+.
+
+Best regards
+
+  Sigbert
+
+
+From mattias.rantalainen at imperial.ac.uk  Sat Feb 24 15:32:24 2007
+From: mattias.rantalainen at imperial.ac.uk (Mattias Rantalainen)
+Date: Sat, 24 Feb 2007 14:32:24 +0000
+Subject: [R-sig-mediawiki] How to use form input?
+In-Reply-To: <45E00AA6.9020508@wiwi.hu-berlin.de>
+Message-ID: <C205FCF8.2FDD%mattias.rantalainen@imperial.ac.uk>
+
+Many thanks!
+
+Best regards,
+/Mattias
+
+
+On 24/2/07 09:51, "Sigbert Klinke" <sigbert at wiwi.hu-berlin.de> wrote:
+
+> Hi,
+>> I would appreciate if someone could post a short code example showing how
+>> this could be done for a simple case. I realize that this question may be
+>> due to my limited knowledge of PHP, but any help in the matter would be much
+>> appreciated.
+>>   
+> Please have a look to
+> http://mars.wiwi.hu-berlin.de/mediawiki/slides/index.php/Integration_of_R_into
+> _wikis_-_Interaction
+> .
+> 
+> Best regards
+> 
+>   Sigbert
+> 
+> _______________________________________________
+> R-sig-mediawiki at r-project.org mailing list
+> https://stat.ethz.ch/mailman/listinfo/r-sig-mediawiki
+
+

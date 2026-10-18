@@ -1,0 +1,214 @@
+From michael at cassin.name  Mon Dec  4 18:17:28 2006
+From: michael at cassin.name (Michael Cassin)
+Date: Mon, 4 Dec 2006 17:17:28 +0000
+Subject: [R-sig-mediawiki] Installation Trouble - getCmd() issue?
+Message-ID: <b02e8b330612040917h755cc26er10ace37ba4e7d24a@mail.gmail.com>
+
+Hi,
+
+This is a very interesting project and I'm very excited to contribute.
+ I'm having some trouble getting up and running though.
+
+If I put the following line in LocalSettings.php
+
+require_once( "extensions/Rext.php" );
+
+then the wiki does not load, it just shows a blank page.
+
+I've done some debugging and it seems to have a problem with this code
+in Rext.php. Below  I have commented out the commands that cause it to
+crash.   It seems to not like getCmd() or extractUrl().   With all of
+these lines commented out, the wiki loads, but of course the extension
+does not work.
+
+=================
+##defined('convert')   || define('convert',   getCmd('', 'convert', ''));
+##defined('sudo')      || define('sudo',      getCmd('', 'sudo', ' -u
+' . sudouser . ' '));
+##defined('chmod')     || define('chmod',     getCmd('', 'chmod', ' 664 '));
+##defined('r_cmd')     || define('r_cmd',     getCmd('', 'R', '
+--vanilla --quiet'));
+
+defined('r_dir')     || define('r_dir',     getcwd() .
+DIRECTORY_SEPARATOR . 'Rfiles' );
+##defined('r_url')     || define('r_url',     extractUrl(r_dir));
+defined('r_cgi')     || define('r_cgi',     getcwd() .
+DIRECTORY_SEPARATOR . 'R.php');
+defined('r_ext')     || define('r_ext',     getcwd() .
+DIRECTORY_SEPARATOR . 'extensions' . DIRECTORY_SEPARATOR . 'R');
+defined('r_img')     || define('r_img',     '.jpg');
+====================
+
+I don't know much about PHP/linux and haven't been able to find
+information on getCmd() that will help me resolve the problem.  Can
+anyone offer any advice?
+
+I'm running:
+Fedora Core 4
+kernel-2.6.17-1.2142_FC4
+MediaWiki 1.8.2
+mysql-4.1.20-1.FC4.1
+php-5.0.4-10.5
+php-mysql-5.0.4-10.5
+ImageMagick-6.2.2.0-3.fc4.2
+R 2.4
+
+Kind regards,
+Mike Cassin
+
+
+From sigbert at wiwi.hu-berlin.de  Tue Dec  5 13:57:51 2006
+From: sigbert at wiwi.hu-berlin.de (Sigbert Klinke)
+Date: Tue, 05 Dec 2006 13:57:51 +0100
+Subject: [R-sig-mediawiki] Installation Trouble - getCmd() issue?
+In-Reply-To: <003701c71857$19d04750$0300a8c0@Laptop>
+References: <003701c71857$19d04750$0300a8c0@Laptop>
+Message-ID: <45756CCF.4010407@wiwi.hu-berlin.de>
+
+Hi,
+> I did some experiments which have convinced me that either the Rext.php
+> include statement is not finding the extbase.php in the same directory, or
+> that the webserver doesn't have the permission to use it.  I also suspect I
+> may have a similar issue to the www.XYZdomain.de example you give in the
+> documentation, but I don't understand what my issue could be.
+>   
+ > My directory structure is like
+ >
+ > /var/www/html/wiki which maps to dev.cassin.name/wiki
+
+If you look at extbase.php, you will find:
+
+function extractUrl ($input) {
+# Suse Linux:  /srv/www/htdocs
+#   TeachWiki: /srv/www/htdocs/mediawiki/teachwiki
+#   StatWiki:  /srv/www/htdocs/mediawiki/statwiki
+# Debian:      /var/www
+  $exparr = array('www', 'htdocs', 'statwiki', 'teachwiki');
+
+In $exparr is stored when to assume that the wiki directory starts. In 
+your case you should add a 'html' such that
+
+  $exparr = array('www', 'htdocs', 'statwiki', 'teachwiki', 'html');
+> However, when I changed the include to the relative path
+> wiki\extensions\extbase.php, it does not work. 
+>   
+Maybe this solves also your extbase.php problem, but I'am not sure. In 
+worst case include the absolute path into Rext.php (maybe with a 
+include_once).
+> By the way, how many people do you have involved in this project?  I think
+> it's very interesting. 
+>   
+At my place nobody, but some users have contributed some code to the 
+project. I will continue, if I change to a new mediawiki version. But up 
+to now nobody reported errors with the mediawikis after 1.6.8 which I'am 
+using.
+
+Yours sincerely
+
+  Sigbert Klinke
+
+
+From sigbert at wiwi.hu-berlin.de  Thu Dec  7 08:42:57 2006
+From: sigbert at wiwi.hu-berlin.de (Sigbert Klinke)
+Date: Thu, 07 Dec 2006 08:42:57 +0100
+Subject: [R-sig-mediawiki] Installation Trouble - getCmd() issue?
+In-Reply-To: <b02e8b330612061019q4b4f19f3kc59795066a89557f@mail.gmail.com>
+References: <003701c71857$19d04750$0300a8c0@Laptop>	
+	<45756CCF.4010407@wiwi.hu-berlin.de>	
+	<b02e8b330612050618q5fa6a611t67fe189b98bedfa8@mail.gmail.com>
+	<b02e8b330612061019q4b4f19f3kc59795066a89557f@mail.gmail.com>
+Message-ID: <4577C601.1070306@wiwi.hu-berlin.de>
+
+Hi,
+> I don't want to take up your time with all these mails, but hope my 
+> experience might be useful for other users.
+Don't worry, I'am very interested to know why it does not work on your 
+computer.
+> [root at dev extensions]# diff Rext.php Rext.php.original.fails   *** 
+> diff reports no differences
+> [root at dev extensions]#   
+>
+> Perhaps I just don't know enough about linux, but the above seems very 
+> odd to me.
+This is really odd.
+> Anyway, I can now get it up and running - as long as I use Security 
+> level 2.
+I do not understand this, the highest level works, but the lower and 
+simpler do not work...
+> Error in file(file, "r", encoding = encoding) :
+> unable to open connection
+> In addition: Warning message:
+> cannot open file '/var/www/html/wiki/extensions/R/StatWiki.r', reason 
+> 'Permission denied'
+> Execution halted
+Did you try to make a copy from StatWiki.r as well?
+> I can skip over this by commenting out the R code that tries to run 
+> StatWiki.r.  Your binomial pdf example will still work. However, I'd 
+> prefer to have a proper install. If you have any alternative 
+> reccomendations, that would be great.
+It just contains the addtional R functions; but if the binomial pdf with 
+the tabel works than outHTML must work. And this function is defined in 
+StatWiki.r. Really strange.
+
+During the weekend I will try to set up a system like yours and try it 
+myself.
+
+Best regards
+
+  Sigbert
+
+
+From sigbert at wiwi.hu-berlin.de  Thu Dec  7 13:29:10 2006
+From: sigbert at wiwi.hu-berlin.de (Sigbert Klinke)
+Date: Thu, 07 Dec 2006 13:29:10 +0100
+Subject: [R-sig-mediawiki] Installation Trouble - getCmd() issue?
+In-Reply-To: <b02e8b330612070255s38f3b168o609e4c69463b967a@mail.gmail.com>
+References: <003701c71857$19d04750$0300a8c0@Laptop>	
+	<45756CCF.4010407@wiwi.hu-berlin.de>	
+	<b02e8b330612050618q5fa6a611t67fe189b98bedfa8@mail.gmail.com>	
+	<b02e8b330612061019q4b4f19f3kc59795066a89557f@mail.gmail.com>	
+	<4577C601.1070306@wiwi.hu-berlin.de>
+	<b02e8b330612070255s38f3b168o609e4c69463b967a@mail.gmail.com>
+Message-ID: <45780916.7050905@wiwi.hu-berlin.de>
+
+Hi,
+> If I could just find out how to "su apache" I think I could debug further.
+Did you check in /etc/passwd if the apache user has a shell? In my 
+/etc/passwd is written for wwwrun (which is my  apache user)
+
+wwwrun:x:30:8:WWW daemon apache:/var/lib/wwwrun:/bin/false
+
+and the "/bin/false" forbids that somebody logs in as wwwrun.
+
+Best regrads
+
+  Sigbert Klinke
+
+
+From sigbert at wiwi.hu-berlin.de  Fri Dec  8 19:42:47 2006
+From: sigbert at wiwi.hu-berlin.de (Sigbert Klinke)
+Date: Fri, 08 Dec 2006 19:42:47 +0100
+Subject: [R-sig-mediawiki] Installation Trouble - getCmd() issue?
+In-Reply-To: <b02e8b330612070524r13b9e681t1d926caba2c5fdab@mail.gmail.com>
+References: <003701c71857$19d04750$0300a8c0@Laptop>	
+	<45756CCF.4010407@wiwi.hu-berlin.de>	
+	<b02e8b330612050618q5fa6a611t67fe189b98bedfa8@mail.gmail.com>	
+	<b02e8b330612061019q4b4f19f3kc59795066a89557f@mail.gmail.com>	
+	<4577C601.1070306@wiwi.hu-berlin.de>	
+	<b02e8b330612070255s38f3b168o609e4c69463b967a@mail.gmail.com>	
+	<45780916.7050905@wiwi.hu-berlin.de>
+	<b02e8b330612070524r13b9e681t1d926caba2c5fdab@mail.gmail.com>
+Message-ID: <4579B227.1060303@wiwi.hu-berlin.de>
+
+Hi,
+
+I just set up myself a mediawiki 1.8.2 installation with the R extension 
+v0.04 on new installed Fedora Core 4 server. Everything worked fine, the 
+example program run. The only thing I had to do was to add the 'html' 
+entry in the $exparr array in extbase.php. So I guess from here on I can 
+not help you further; you must have tweaked your system  such that it is 
+not a clean Fedora system..
+
+Sorry  Sigbert
+
+
