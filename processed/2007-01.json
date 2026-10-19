@@ -13,11 +13,14 @@
       "subject_clean": "Problem with dbapply",
       "in_reply_to": null,
       "references": [],
-      "body_plain": "An embedded and charset-unspecified text was scrubbed...\nName: not available\nUrl: https://stat.ethz.ch/pipermail/r-sig-mediawiki/attachments/20070105/c08cc156/attachment.pl",
-      "body_snippet": "An embedded and charset-unspecified text was scrubbed...\nName: not available\nUrl: https://stat.ethz.ch/pipermail/r-sig-mediawiki/attachments/20070105/c08cc156/attachment.pl",
+      "body_plain": "error using dbapply\n\ni try this\n///\ndrv<-dbDriver(\"MySQL\")\ncon<-dbConnect(drv,dbname=\"prismrsch\",user=\"root\",host=\"localhost\",\npassword=\"montanha\")\nquery1<-(\"select account_id, accounttype_cd,account_name from account order\nby account_id\")\nrs <- dbSendQuery(con, query1)\n\nout<- dbApply(rs, INDEX=\"account_id\", FUN =function(x,grp)\nquantile(x$account_id,names=FALSE))\n\n//\nbut i had this message:\n\nErro em mysqlDBApply(res, ...) : SET_STRING_ELT() can only be applied to a\n'character vector', not a 'NULL'\n\nwhats is the problem?\n\n\n-- \nProf. Aleksandro Montanha\n====================\n\n\t[[alternative HTML version deleted]]",
+      "body_snippet": "error using dbapply\n\ni try this\n///\ndrv<-dbDriver(\"MySQL\")\ncon<-dbConnect(drv,dbname=\"prismrsch\",user=\"root\",host=\"localhost\",\npassword=\"montanha\")\nquery1<-(\"select account_id, accounttype_cd,account_",
       "thread_id": "thread-795cd1b0f990",
       "thread_depth": 0,
-      "month": "2007-01"
+      "month": "2007-01",
+      "restored_from": [
+        "https://stat.ethz.ch/pipermail/r-sig-mediawiki/attachments/20070105/c08cc156/attachment.pl"
+      ]
     }
   ],
   "threads": [
